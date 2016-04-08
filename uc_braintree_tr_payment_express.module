@@ -73,8 +73,11 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   $form['#attached']['js'] = array(
   		drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
   		drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v1/braintree-data.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
+  		drupal_add_js('//--><!]]></script><script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
+		drupal_add_js(drupal_get_path('module', 'uc_cart') . '/uc_cart.js'),
+  		drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/dist/parsley.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
+  		drupal_add_js('//--><!]]></script><script type="text/javascript" src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/files/parsley-validation.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
  // 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
-      drupal_add_js(drupal_get_path('module', 'uc_cart') . '/uc_cart.js'),
   );
   $form['#attributes'] = array('name' => 'uc_braintree_tr_payment_express_donate');
 
@@ -86,12 +89,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['transaction[amount]'] = array(
     '#type' => 'textfield',
-    '#title' => t('One-Time Gift'),
+    '#title' => t('One-Time Gift test'),
     '#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#size' => 20,
     '#attributes' => array(
-      'onKeyUp' => 'javascript:hideSubmit();',
+      //'onKeyUp' => 'javascript:hideSubmit();',
       'onKeyPress' => 'javascript:validateAmount();',
     ),
   );
