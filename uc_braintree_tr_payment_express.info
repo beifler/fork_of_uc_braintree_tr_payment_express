@@ -1,0 +1,12 @@
+;
+; @file  Module dependencies for the uc_braintree_tr_payment module.
+;
+; Author   : Mark Hurley  <mark@pioneeringsoftware.com>
+; Subject  : Contains implementations of hook_install() and hook_uninstall()
+;
+name = Braintree Transparent Redirect Payment Express Donation
+description = Creates a one page form for donations using the Braintree Transparent Redirection Payment Method
+dependencies[] = uc_braintree_tr_payment
+package = Ubercart - payment
+php = 5.0
+core = 6.x

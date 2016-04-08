@@ -1,0 +1,20 @@
+/**
+ * @file Installation instructions for the 
+ *   uc_braintree_tr_payment_express module.
+ */
+
+To install the uc_braintree_tr_payment_express module, 
+  please follow the steps below:
+
+  1) Enable the uc_braintree_tr_payment_express module using drush or the Drupal
+     administration page.
+  
+     drush -y en uc_braintree_tr_payment_express
+     
+  2) Create two custom fields through Braintree Gateway under 
+     settings -> processing. One called "comments" and the other called 
+     "billing_phone". Put "comments" and "billing_phone" under api_name. 
+     Both should have "Pass Thru" as their option  
+
+  3) use "drupal_get_form(uc_braintree_tr_payment_express_donate_form)" in a 
+     node to include express checkout form in your site.

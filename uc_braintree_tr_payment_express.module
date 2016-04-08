@@ -1,0 +1,799 @@
+<?php
+/**
+ * @file
+ * Used to allow a one screen donation form using the Braintree transparent
+ * redirect and server-to-server token processing.
+ */
+
+/**
+ * An array of valid permissions for the uc_braintree_tr_payment_express module.
+ */
+function uc_braintree_tr_payment_express_perm() {
+  return array('access donate form');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function uc_braintree_tr_payment_express_menu() {
+  $items = array();
+  // Delete or comment out before Giving to Bren.
+  $items['uc_braintree_tr_payment_express_donate_form'] = array(
+    'title' => 'Donate Express',
+    'page callback' => 'uc_braintree_tr_payment_express_donate_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['express/credit/complete'] = array(
+    'title' => 'Donation Processing',
+    'page callback' => 'uc_braintree_tr_payment_express_donate_form_complete',
+    'access arguments' => array('access content'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/store/braintree/confirmation_node'] = array(
+    'title' => 'Customer Order Confirmation Node',
+    'page callback' => 'uc_braintree_tr_payment_express_settings',
+    'page arguments' => array(3),
+    'access arguments' => array('administer braintree payment gateway information'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'uc_braintree_tr_payment_express.admin.inc',
+  );
+
+  $items['admin/store/braintree/config_anonymous_user'] = array(
+    'title' => 'Configure Anonymous User Value',
+    'page callback' => 'uc_braintree_tr_payment_express_settings',
+    'page arguments' => array(3),
+    'access arguments' => array('administer braintree payment gateway information'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'uc_braintree_tr_payment_express.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Callback access for user's ability to use the donation express form.
+ */
+function uc_braintree_tr_payment_express_donate_form_access() {
+  $user = user_uid_optional_load();
+  $access = ($user->uid == 1) || (user_access('access content'));
+  return $access;
+}
+
+/**
+ * A form that allows a user to make a donation through one page.
+ */
+function uc_braintree_tr_payment_express_donate_form($form_state) {
+  global $_uc_braintree_tr_payment_express_connection_exception;
+  uc_braintree_tr_payment_configuration_initialization();
+
+  $form = array();
+  $form['#attached']['js'] = array(
+  		drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
+  		drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v1/braintree-data.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
+ // 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
+      drupal_add_js(drupal_get_path('module', 'uc_cart') . '/uc_cart.js'),
+  );
+  $form['#attributes'] = array('name' => 'uc_braintree_tr_payment_express_donate');
+
+  $user = user_uid_optional_load();
+  if ($user->uid == 0) {
+    $uc_braintree_tr_payment_express_anonymous_uid = variable_get('uc_braintree_tr_payment_express_anonymous_uid', '999999');
+    $user->uid = $uc_braintree_tr_payment_express_anonymous_uid;
+  }
+
+  $form['transaction[amount]'] = array(
+    '#type' => 'textfield',
+    '#title' => t('One-Time Gift'),
+    '#required' => TRUE,
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
+    '#size' => 20,
+    '#attributes' => array(
+      'onKeyUp' => 'javascript:hideSubmit();',
+      'onKeyPress' => 'javascript:validateAmount();',
+    ),
+  );
+
+  $form['amount_error'] = array(
+    '#value' => "<span id ='amount-error' style = 'visibility: hidden'><b>" .
+    "Enter only numbers and a decimal point if needed.</b>" .
+    "<input type='button' id='amount-error' value='Close' " .
+    "onclick='hideSpan(this.id)' /></span>",
+  );
+
+  $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
+
+  if ($customer_id) {
+    $form['transaction[customer][email]'] = array(
+      '#type' => 'hidden',
+      '#title' => t('E-mail address'),
+      '#required' => TRUE,
+      '#value' => $user->mail,
+      '#size' => 32,
+      //'#attributes' => array(
+      //  'onKeyPress' => 'javascript:hideSubmit();',
+      //),
+    );
+  }
+  else {
+    $form['transaction[customer][email]'] = array(
+      '#type' => 'textfield',
+      '#title' => t('E-mail address'),
+      '#required' => TRUE,
+      '#value' => $_SESSION['uc_braintree_tr_payment_express_email'],
+      '#size' => 32,
+      //'#attributes' => array(
+      //  'onKeyPress' => 'javascript:hideSubmit();',
+      //),
+    );
+  }
+
+  $form['billingText'] = array(
+    '#type' => 'markup',
+    '#value' => '<p>testing Enter your billing address and information here.</p>',
+  );
+
+  if ($user->uid != 0 && $user->uid != variable_get('uc_braintree_tr_payment_express_anonymous_uid', '999999')) {
+    $addresses = uc_select_address($user->uid, 'billing', 'apply_address(\'billing\', this.value);', t('Saved addresses'), FALSE);
+    if (!(empty($addresses))) {
+      $form['billing_address_select'] = $addresses;
+    }
+  }
+
+    //'#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
+  $form['transaction[customer][last_name]'] = array(
+    '#type' => 'hidden',
+    '#id' => 'edit-panes-billing-customer-last-name',
+    '#title' => t('Customer last name'),
+    '#required' => TRUE,
+    '#default_value' => 'test customer last name',
+    '#size' => 32,
+    //'#attributes' => array(
+    //  'onchange' => 'javascript:hideSubmit();',
+    //),
+  );
+
+  $form['transaction[billing][first_name]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-first-name',
+    '#title' => t('First name'),
+    '#required' => TRUE,
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_first_name'],
+    '#size' => 32,
+//    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+//    ),
+
+  );
+
+  $form['transaction[billing][last_name]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-last-name',
+    '#title' => t('Last name'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
+    '#size' => 32,
+    '#required' => TRUE,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();document.getElementById(\'edit-panes-billing-customer-last-name\').value = this.value;',
+      'onchange' => 'document.getElementById(\'edit-panes-billing-customer-last-name\').value = this.value;',
+    ),
+  );
+
+  $form['transaction[billing][company]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-company',
+    '#title' => t('Company'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_company'],
+    '#size' => 32,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+  );
+
+  $form['transaction[billing][street_address]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-street1',
+    '#title' => t('Street address'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_street'],
+    '#size' => 32,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+  );
+
+  $form['transaction[billing][extended_address]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-street2',
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_street2'],
+    '#size' => 32,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+  );
+
+  $form['transaction[billing][locality]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-city',
+    '#title' => t('City'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_locality'],
+    '#size' => 32,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+  );
+
+  $form['transaction[billing][country_code_numeric]']
+    = uc_country_select(uc_get_field_name('country'), $_SESSION['uc_braintree_tr_payment_express_country'], NULL, 'name', TRUE);
+  //$form['transaction[billing][country_code_numeric]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+  $form['transaction[billing][country_code_numeric]']['#id'] = "edit-panes-billing-billing-country";
+
+  $form['transaction[billing][region]']
+    = uc_zone_select(uc_get_field_name('zone'), $_SESSION['uc_braintree_tr_payment_express_region'], NULL, NULL, 'name', TRUE);
+  //$form['transaction[billing][region]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+  $form['transaction[billing][region]']['#id'] = "edit-panes-billing-billing-zone";
+
+  $form['transaction[billing][postal_code]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-postal-code',
+    '#title' => t('Postal code'),
+    '#required' => TRUE,
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_postal_code'],
+    '#size' => 20,
+    '#attributes' => array(
+      'onBlur' => 'javascript:validatePostalCode();',
+      //'onChange' => 'javascript:hideSubmit();',
+    ),
+  );
+
+  $form['postal_code_error'] = array(
+    '#value' => "<span id ='billing-postal-code-error' style = 'visibility: hidden'>" .
+    "<b> Enter 5 to 9 numbers for your Postal Code. </b>" .
+    "<input type='button' id='billing-postal-code-error' value='Close' " .
+    "onclick='hideSpan(this.id)' /></span>",
+  );
+
+  $form['transaction[custom_fields][billing_phone]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-phone',
+    '#title' => t('Phone number'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_billing_phone'],
+    '#size' => 20,
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+      'onBlur' => 'javascript:validatePhoneNumber();',
+    ),
+  );
+
+  $form['phone_number_error'] = array(
+    '#value' => "<span id ='billing-phone-number-error' " .
+    "style = 'visibility: hidden'> <b> Enter 5 to 20 numbers for your Phone Number." .
+    " </b><input type='button' id='billing-phone-number-error' value='Close'" .
+    " onclick='hideSpan(this.id)' /></span>",
+  );
+
+/*
+  $form['order_comments'] = array(
+    '#type' => 'markup',
+    '#value' => '<p>Use this area for special instructions or questions regarding your donation.</p>',
+  );
+
+  $form['order_comments']['transaction[custom_fields][comments]'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Order comments'),
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_comment'],
+    '#attributes' => array(
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+  );
+*/
+
+  $image_path = base_path() . drupal_get_path('module', 'uc_braintree_tr_payment') . "/images";
+
+  $form['images'] = array(
+    '#type' => 'markup',
+    '#value' => "<img src='$image_path/visa.gif'><img src='$image_path/mastercard.gif'>" .
+    "<img src='$image_path/discover.gif'><img src='$image_path/amex.gif'>",
+  );
+
+  $form['transaction[credit_card][number]'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Card Number'),
+    '#attributes' => array(
+      'autocomplete' => 'off',
+      //'onchange' => 'javascript:hideSubmit();',
+    ),
+    '#size' => 20,
+    '#prefix' => '<div id="trDiv" class="hideDivision">',
+    '#maxlength' => 19,
+    '#weight' => 10,
+  );
+
+  $form['transaction[credit_card][expiration_month]'] = uc_select_month(t('Expiration Month'));
+  $form['transaction[credit_card][expiration_month]']['#weight'] = 11;
+  //$form['transaction[credit_card][expiration_month]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+
+  $form['transaction[credit_card][expiration_year]'] = uc_select_year(t('Expiration Year'));
+  $form['transaction[credit_card][expiration_year]']['#weight'] = 12;
+  //$form['transaction[credit_card][expiration_year]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+
+  if (variable_get('uc_braintree_tr_payment_cvv_rules_match', NULL)) {
+    $form['transaction[credit_card][cvv]'] = array(
+      '#type' => 'textfield',
+      '#title' => t('CVV'),
+      '#attributes' => array(
+        'autocomplete' => 'off',
+        //'onchange' => 'javascript:hideSubmit();',
+      ),
+      '#size' => 3,
+      '#maxlength' => 4,
+      '#weight' => 13,
+    );
+    $suffix = "cvv";
+  }
+
+  switch ($suffix) {
+    case 'cvv':
+      $form['transaction[credit_card][cvv]']['#suffix'] = "</div>";
+      break;
+
+    default:
+      $form['transaction[credit_card][expiration_year]']['#suffix'] = "</div>";
+  }
+
+  $form['submit'] = array(
+    '#weight' => 20,
+    //'#value' => "<span id ='submit-button' style = 'visibility: hidden'>" .
+    '#value' => "<input type='submit' id='submit-button' value='Donate'/></span>",
+  );
+
+  uc_braintree_tr_payment_express_unset_sessions();
+
+  $tr_url = Braintree_TransparentRedirect::url();
+  $base_url = base_path() . "?q=express/credit/complete";
+  $redirect_url = "https://" . $_SERVER['SERVER_NAME'] . $base_url .
+    "&paymentAction=transparentRedirect";
+
+  $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
+
+  $merchantId = variable_get('uc_braintree_tr_payment_merchant_id', '');
+  $kountId = variable_get('uc_braintree_tr_payment_kount_id', '');
+
+  drupal_add_js("var environment = BraintreeData.environments.production.withId($kountId);
+    BraintreeData.setup(\"$merchantId\", \"uc-braintree-tr-payment-express-donate-form\", environment);
+    window.onBraintreeDataLoad = function() {
+      BraintreeData.setup(\"$merchantId\", \"uc-braintree-tr-payment-express-donate-form\", environment);
+    };","inline");
+
+  $tr_data = Braintree_TransparentRedirect::transactionData(
+    array(
+      'transaction' => array(
+        'customerId' => ($customer_id ? $customer_id : ''),
+        'type' => Braintree_Transaction::SALE,
+        'deviceData' => $form["device_data"],
+        'customer' => array(
+          'website' => variable_get('uc_braintree_tr_payment_website', ''),
+        ),
+        'options' => array(
+          'storeInVault' => (user_is_logged_in() ? TRUE : FALSE),
+          'submitForSettlement' => 'TRUE'),
+      	'channel' => 'PioneeringSoftware_SP_Braintree',
+      ),
+      'redirectUrl' => $redirect_url,
+    )
+  );
+
+  $form['tr_data'] = array(
+    '#type' => 'hidden',
+    '#value' => $tr_data,
+  );
+
+  $other_credit_card = $_REQUEST['otherCreditCard'];
+  $tokens = uc_braintree_tr_payment_get_all_user_tokens($user->uid);
+
+  /* If a Braintree token is on file, load the credit form with the last4
+   * using the token value. Do not submit to braintree for credit card
+   * storage by default.*/
+  if (count($tokens) > 0 and (!($other_credit_card))) {
+    drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/uc_braintree_tr_payment_express.css');
+
+    $s2s_url = base_path() . "?q=express/credit/complete" . "&paymentAction=server2server";
+
+    $form['tr_url'] = array(
+      '#id' => 'tr_url',
+      '#type' => 'hidden',
+      '#value' => $tr_url,
+    );
+
+    $form['s2s_url'] = array(
+      '#id' => 's2s_url',
+      '#type' => 'hidden',
+      '#value' => $s2s_url,
+    );
+
+    $form['transaction[credit_card][number]']['#disabled'] = TRUE;
+    $form['transaction[credit_card][expiration_month]']['#disabled'] = TRUE;
+    $form['transaction[credit_card][expiration_year]']['#disabled'] = TRUE;
+    $form['transaction[credit_card][cvv]']['#disabled'] = TRUE;
+
+    $options = array();
+
+    foreach ($tokens as $token_attribute) {
+      $credit_card = uc_braintree_tr_payment_get_last_four($token_attribute['token']);
+      if (count($credit_card) > 0) {
+        $options[$credit_card['0'] . " " . $credit_card['1']] = array($token_attribute['token'] => 'Use ' . $credit_card['0'] . ' Ending in ' . $credit_card['1']);
+      }
+    }
+
+    if (!($_uc_braintree_tr_payment_express_connection_exception)) {
+      $options["Other"] = 'Other Credit Card';
+
+      $form['token'] = array(
+        '#type' => 'select',
+        '#title' => t('Credit Card'),
+        '#options' => $options,
+        '#weight' => 15,
+        '#attributes' => array(
+          'token' => 'token',
+          'onChange' => 'javascript:var selectedValue = this.options[this.selectedIndex].value;' .
+          'javascript: if (selectedValue == "Other") { ' .
+          'this.form.action = getElementById("tr_url").value; ' .
+          'getElementById("edit-transaction[credit-card-number]").disabled=false;' .
+          'getElementById("edit-transaction[credit-card-expiration-month]").disabled=false;' .
+          'getElementById("edit-transaction[credit-card-expiration-year]").disabled=false;' .
+          'getElementById("edit-transaction[credit-card-cvv]").disabled=false;' .
+          'getElementById("trDiv").setAttribute("class","showDivision");' .
+          '} else { this.form.action = getElementById("s2s_url").value;' .
+          'getElementById("edit-transaction[credit-card-number]").disabled=true;' .
+          'getElementById("edit-transaction[credit-card-expiration-month]").disabled=true;' .
+          'getElementById("edit-transaction[credit-card-expiration-year]").disabled=true;' .
+          'getElementById("edit-transaction[credit-card-cvv]").disabled=true;' .
+          'getElementById("trDiv").setAttribute("class","hideDivision");};',
+          //'onBlur' => 'javascript:hideSubmit();',
+        ),
+      );
+
+      $form['#action'] = $s2s_url;
+    }
+    else {
+      $form['#action'] = "#noprocess";
+    }
+  }
+  else {
+    if (!($_uc_braintree_tr_payment_express_connection_exception)) {
+      $form['#action'] = $tr_url;
+      $form['transaction[credit_card][number]']['#disabled'] = FALSE;
+      $form['transaction[credit_card][expiration_month]']['#disabled'] = FALSE;
+      $form['transaction[credit_card][expiration_year]']['#disabled'] = FALSE;
+      $form['transaction[credit_card][cvv]']['#disabled'] = FALSE;
+
+    }
+    else {
+      $form['#action'] = "#noprocess";
+    }
+  }
+  return $form;
+}
+
+/**
+ * Page callback for transaction completion.
+ */
+function uc_braintree_tr_payment_express_donate_form_complete() {
+  uc_braintree_tr_payment_configuration_initialization();
+  uc_braintree_tr_payment_express_unset_sessions();
+
+  $user = user_uid_optional_load();
+  if ($user->uid == 0) {
+    $uc_braintree_tr_payment_express_anonymous_uid = variable_get('uc_braintree_tr_payment_express_anonymous_uid', '999999');
+    $user->uid = $uc_braintree_tr_payment_express_anonymous_uid;
+  }
+
+  $payment_action = $_REQUEST['paymentAction'];
+
+  switch ($payment_action) {
+
+    case 'transparentRedirect':
+
+      $query_string = preg_replace('/^q=&(.*)$/','$1',$_SERVER['QUERY_STRING']);
+
+      try {
+        $result = Braintree_TransparentRedirect::confirm($query_string);
+
+        if (variable_get('uc_braintree_tr_payment_transaction_debugging', NULL)) {
+          uc_braintree_tr_payment_redirect_transaction_debugging($result);
+        }
+
+        if ($result->success and $result->transaction->processorResponseCode <= 2000) {
+
+          $order = uc_order_new($user->uid, 'payment_received');
+
+          $product = node_load(intval(8));
+          $product->qty = intval(1);
+          $product->price = $result->transaction->amount;
+
+          uc_order_product_save($order->order_id, $product);
+
+          $order = uc_order_load($order->order_id);
+
+          $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
+
+          uc_braintree_tr_payment_log_debug_message(t("Stored database Customer ID: %customer_id",
+            array('%customer_id' => $customer_id)));
+
+          try {
+            uc_braintree_tr_payment_save_customer($order->uid, $result->transaction->customerDetails->id);
+          }
+          catch (Exception $e) {
+            uc_braintree_tr_payment_log_debug_message(t("Error saving customer information: %exception",
+              array('%exception' => $e)));
+          }
+
+          if ($customer_id) {
+            $order->primary_email = $user->mail;
+          }
+          else {
+            $order->primary_email = $result->transaction->customerDetails->email;
+          }
+
+          $order->billing_first_name = $result->transaction->billingDetails->firstName;
+          $order->billing_last_name = $result->transaction->billingDetails->lastName;
+          $order->billing_company = $result->transaction->billingDetails->company;
+          $order->billing_street1 = $result->transaction->billingDetails->streetAddress;
+          $order->billing_street2 = $result->transaction->billingDetails->extendedAddress;
+          $order->billing_city = $result->transaction->billingDetails->locality;
+          $order->billing_country = $result->transaction->billingDetails->countryCodeNumeric;
+          $order->billing_zone = $result->transaction->billingDetails->region;
+          $order->billing_postal_code = $result->transaction->billingDetails->postalCode;
+          $order->billing_phone = $result->transaction->customFields['billing_phone'];
+          $order->payment_method = "token";
+
+          uc_order_save($order);
+
+          $comment = $result->transaction->customFields['comments'];
+          trim($comment);
+          if ($comment != "" && $comment != " ") {
+            uc_order_comment_save($order->order_id, $user->uid, $comment, 'admin');
+          }
+
+          $comment = "Card charged, transaction code: " . $result->transaction->id;
+
+          uc_braintree_tr_payment_express_enter($order->order_id, 'token', $order->order_total, $user->uid, NULL, $comment);
+
+          if (user_is_logged_in()) {
+            $token = $result->transaction->creditCardDetails->token;
+            $card_type = $result->transaction->creditCardDetails->cardType;
+            $last_four = $result->transaction->creditCardDetails->last4;
+            uc_braintree_tr_payment_save_token($order->uid, $token, $card_type, $last_four);
+          }
+
+          uc_braintree_tr_payment_express_confirmation();
+        }
+        else {
+          require_once 'uc_braintree_tr_payment_redirect_error_handling.inc';
+
+          $output = uc_braintree_tr_payment_redirect_error_handling($result);
+          uc_braintree_tr_payment_express_set_sessions($result);
+        }
+      }
+      catch (Exception $e) {
+        uc_braintree_tr_payment_express_connection_exception($e);
+      }
+      break;
+
+    case 'server2server':
+
+      $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
+
+      $info = $_REQUEST['transaction'];
+      $amount = $info['amount'];
+      $billing = $info['billing'];
+      $custom_fields = $info['custom_fields'];
+
+      if ($amount > 0) {
+        $order = uc_order_new($user->uid, 'payment_received');
+
+        $product = node_load(intval(8));
+        $product->qty = intval(1);
+        $product->price = $amount;
+        uc_order_product_save($order->order_id, $product);
+        $order = uc_order_load($order->order_id);
+      }
+
+      $token = check_plain($_POST['token']);
+
+      try {
+        $result = Braintree_CreditCard::sale(
+          $token,
+          array(
+            'deviceData' => $_REQUEST["device_data"],
+            'amount' => $amount,
+            'orderId' => $order->order_id,
+            'options' => array(
+              'submitForSettlement' => 'TRUE',
+            ),
+          )
+        );
+
+        uc_braintree_tr_payment_redirect_transaction_debugging($result);
+
+        if ($result->success and $result->transaction->processorResponseCode <= 2000) {
+
+          if ($customer_id) {
+            $customer['phone'] = $result->transaction->customerDetails->phone;
+            $customer['email'] = $user->mail;
+          }
+          else {
+            $customer = $info['customer'];
+          }
+
+          $order->primary_email = $customer['email'];
+          $order->billing_first_name = $billing['first_name'];
+          $order->billing_last_name = $billing['last_name'];
+          $order->billing_company = $billing['company'];
+          $order->billing_street1 = $billing['street_address'];
+          $order->billing_street2 = $billing['extended_address'];
+          $order->billing_city = $billing['locality'];
+          $order->billing_country = $billing['country_code_numeric'];
+          $order->billing_zone = $billing['region'];
+          $order->billing_postal_code = $billing['postal_code'];
+          $order->billing_phone = $custom_fields['billing_phone'];
+          $order->payment_method = "token";
+
+          uc_order_save($order);
+
+          $comment = $custom_fields['comments'];
+          trim($comment);
+          if ($comment != "" && $comment != " ") {
+            uc_order_comment_save($order->order_id, $user->uid, $comment, 'admin');
+          }
+          $comment = "Card charged, transaction code: " . $result->transaction->id;
+
+          uc_braintree_tr_payment_express_enter($order->order_id, 'token', $order->order_total, $user->uid, NULL, $comment);
+
+          uc_braintree_tr_payment_express_confirmation();
+        }
+        else {
+          require_once 'uc_braintree_tr_payment_redirect_error_handling.inc';
+
+          uc_braintree_tr_payment_express_set_sessions($result);
+          $output = uc_braintree_tr_payment_redirect_error_handling($result);
+
+        }
+      }
+      catch (Exception $e) {
+        uc_braintree_tr_payment_express_connection_exception($e);
+      }
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Goes to the confirmation page if there is one and prints a thank you.
+ */
+function uc_braintree_tr_payment_express_confirmation() {
+  $confirmation_node = variable_get('uc_braintree_tr_payment_express_confirmation_node_value', '');
+  drupal_set_message("Thank you for your donation!");
+  drupal_goto("node/" . $confirmation_node);
+  uc_braintree_tr_payment_express_log_error_message("A node has not been configured for the Donation Confirmation Page through the store configuration under Braintree.");
+}
+
+/**
+ * Saves the personal info entered by the user on the donation express form.
+ */
+function uc_braintree_tr_payment_express_set_sessions($result) {
+  $_SESSION['uc_braintree_tr_payment_express_amount'] = $result->params['transaction']['amount'];
+  $_SESSION['uc_braintree_tr_payment_express_email'] = $result->params['transaction']['customer']['email'];
+  $_SESSION['uc_braintree_tr_payment_express_first_name'] = $result->params['transaction']['billing']['firstName'];
+  $_SESSION['uc_braintree_tr_payment_express_last_name'] = $result->params['transaction']['billing']['lastName'];
+  $_SESSION['uc_braintree_tr_payment_express_company'] = $result->params['transaction']['billing']['company'];
+  $_SESSION['uc_braintree_tr_payment_express_street'] = $result->params['transaction']['billing']['streetAddress'];
+  $_SESSION['uc_braintree_tr_payment_express_street2'] = $result->params['transaction']['billing']['extendedAddress'];
+  $_SESSION['uc_braintree_tr_payment_express_locality'] = $result->params['transaction']['billing']['locality'];
+  $_SESSION['uc_braintree_tr_payment_express_country']  = $result->params['transaction']['billing']['countryCodeNumeric'];
+  $_SESSION['uc_braintree_tr_payment_express_region']  = $result->params['transaction']['billing']['region'];
+  $_SESSION['uc_braintree_tr_payment_express_postal_code'] = $result->params['transaction']['billing']['postalCode'];
+  $_SESSION['uc_braintree_tr_payment_express_billing_phone'] = $result->params['transaction']['customFields']['billing_phone'];
+  $_SESSION['uc_braintree_tr_payment_express_comment'] = $result->params['transaction']['customFields']['comments'];
+}
+
+/**
+ * Unsets all the session variables holding the donation express form values.
+ */
+function uc_braintree_tr_payment_express_unset_sessions() {
+  $_SESSION['uc_braintree_tr_payment_express_amount'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_email'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_first_name'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_last_name'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_company'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_street'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_street2'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_locality'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_country']  = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_region']  = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_postal_code'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_billing_phone'] = NULL;
+  $_SESSION['uc_braintree_tr_payment_express_comment'] = NULL;
+}
+
+/**
+ * Calls drupal get form for the the donate form.
+ */
+function uc_braintree_tr_payment_express_donate_page() {
+  return drupal_get_form('uc_braintree_tr_payment_express_donate_form');
+}
+
+/**
+ * Function used to track and display Braintree connection exceptions.
+ */
+function uc_braintree_tr_payment_express_connection_exception($e) {
+  global $_uc_braintree_tr_payment_express_connection_exception;
+
+  $_uc_braintree_tr_payment_express_connection_exception++;
+
+  if ($_uc_braintree_tr_payment_express_connection_exception == 1) {
+    uc_braintree_tr_payment_express_log_error_message("A connection to the subscription and payment management system could not be obtained at this time. " .
+      "If the problem persists, please contact us to complete your order.");
+  }
+
+  uc_braintree_tr_payment_express_log_error_message("Braintree Connection Exception: " . $e);
+}
+
+/**
+ * Function used to display/log error information.
+ */
+function uc_braintree_tr_payment_express_log_error_message($message) {
+  $message = check_plain($message);
+  drupal_set_message($message, 'error');
+  watchdog('uc_braintree_tr_payment_express', $message, WATCHDOG_ERROR);
+}
+
+/**
+ * Copy of uc_payment_enter function except skips the cart and gets current uid.
+ */
+function uc_braintree_tr_payment_express_enter($order_id, $method, $amount, $uid, $data = NULL, $comment = '', $received = NULL) {
+  if ($received == NULL) {
+    $received = time();
+  }
+  $method_name = _payment_method_data($method, 'review');
+  if (empty($method_name)) {
+    $method_name = _payment_method_data($method, 'name');
+  }
+  if (is_null($method_name)) {
+    $method_name = t('Other');
+  }
+  if (is_array($data)) {
+    $data = serialize($data);
+  }
+
+  if (variable_get('uc_payment_logging', TRUE)) {
+    $user = user_uid_optional_load();
+    $context = array(
+      'revision' => 'formatted',
+      'type' => 'amount',
+    );
+    $log_message = t('@method payment for @amount entered by @user.', array(
+      '@method' => $method_name,
+      '@amount' => uc_price($amount, $context),
+      '@user' => uc_get_initials($user->uid),
+    )
+    );
+    uc_order_log_changes($order_id, array($log_message));
+  }
+
+  db_query("INSERT INTO {uc_payment_receipts} (order_id, method, amount, uid, data, comment, received) VALUES (%d, '%s', %f, %d, '%s', '%s', %d)",
+    $order_id, $method_name, $amount, $uid, $data, $comment, $received);
+  $receipt_id = db_last_insert_id('uc_payment_receipts', 'receipt_id');
+
+  $order = uc_order_load($order_id);
+  $account = user_load($uid);
+  if (!$account) {
+    $account->uid = $uid;
+  }
+
+  module_invoke_all('uc_payment_entered', $order, $method, $amount, $account, $data, $comment);
+  ca_pull_trigger('uc_payment_entered', $order, $account);
+
+  return $receipt_id;
+}

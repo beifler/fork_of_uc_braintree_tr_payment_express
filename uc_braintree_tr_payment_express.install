@@ -1,0 +1,34 @@
+<?php
+/**
+ * @file
+ * Used to install and uninstall the uc_braintree_tr_payment_express module.
+ *
+ * Authors : Mark Hurley  <mark@pioneeringsoftware.com>, 
+ *   Bethany Ritter <bethany@pioneeringsoftware.com>
+ * Subject : Contains implementations of hook_install() and hook_uninstall()
+ */
+
+/*
+ * You must create two custom fields in your braintree account called comments
+ * and billing_phone in order for the user to be able to use the order comments
+ * and phone fields. An error will occur if you don't create the two custom
+ * fields and if you don't call them comments and billing_phone. Use "Pass Thru"
+ * as the option for both custom fields.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function uc_braintree_tr_payment_express_install() {
+  drupal_install_schema('uc_braintree_tr_payment_express');
+  db_query("DELETE FROM {cache}");
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function uc_braintree_tr_payment_express_uninstall() {
+  drupal_uninstall_schema('uc_braintree_tr_payment_express');
+  variable_del('uc_braintree_tr_payment_express_anonymous_uid');
+  variable_del('uc_braintree_tr_payment_express_confirmation_node_value');
+}
