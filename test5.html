@@ -1,0 +1,156 @@
+<html class="codepen"><head>
+<link rel="stylesheet prefetch" href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.9/bower_components/bootstrap/dist/css/bootstrap.css"><link rel="stylesheet prefetch" href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.9/doc/assets/docs.css"><link rel="stylesheet prefetch" href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.9/src/parsley.css">
+<style class="cp-pen-styles">.form-section {
+  padding-left: 15px;
+  border-left: 2px solid #FF851B;
+display: none;
+}
+.form-section.current {
+  display: inherit;
+}
+.btn-info, .btn-default {
+  margin-top: 10px;
+}
+html.codepen body {
+  margin: 1em;
+}
+</style>
+<script src="//code.jquery.com/jquery-2.1.3.js"></script>
+<script type="text/javascript">
+var jQuery2x = $.noConflict();
+</script>
+
+<script src="//code.jquery.com/jquery-1.2.6.js"></script>
+</head><body>
+<form action="https://api.braintreegateway.com:443/merchants/2kvvfd48hbb4y8bk/transparent_redirect_requests" accept-charset="UTF-8" method="post" id="uc-braintree-tr-payment-express-donate-form" name="uc_braintree_tr_payment_express_donate">
+  <div>
+    <link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/doc/assets/docs.css" rel="stylesheet">
+    <link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/src/parsley.css" rel="stylesheet">
+      <div class="form-section current">
+      <div class="form-item" id="edit-transaction[amount]-wrapper">
+        <label for="edit-transaction[amount]">One-Time Gift test2:</label>
+        <input type="text" step="100" data-parsley-type="number" maxlength="128" name="transaction[amount]" id="edit-transaction[amount]" size="20" value="" onkeypress="javascript:validateAmount();" class="form-text required" data-parsley-group="block-0">
+      </div>
+      <span id="amount-error" style="visibility: hidden"><b>Enter only numbers and a decimal point if needed.</b><input type="button" id="amount-error" value="Close" onclick="hideSpan(this.id)" data-parsley-group="block-0"></span>
+      <div class="form-item" id="edit-transaction[customer-email]-wrapper">
+        <label for="edit-transaction[customer-email]">E-mail address: <span class="form-required" title="This field is required.">*</span></label>
+        <input type="email" maxlength="128" name="transaction[customer][email]" id="edit-transaction[customer-email]" size="32" value="" class="form-text required" data-parsley-group="block-0">
+      </div>
+    </div>
+    <div class="form-section">
+      <p>Enter your billing address and information here.</p>
+      <input type="hidden" name="transaction[customer][last_name]" id="edit-panes-billing-customer-last-name" value="test customer last name" data-parsley-group="block-1">
+      <div class="form-item" id="edit-panes-billing-billing-first-name-wrapper">
+        <label for="edit-panes-billing-billing-first-name">First name: <span class="form-required" title="This field is required.">*</span></label>
+        <input type="text" maxlength="128" name="transaction[billing][first_name]" id="edit-panes-billing-billing-first-name" size="32" value="" required="" class="form-text required" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-last-name-wrapper">
+        <label for="edit-panes-billing-billing-last-name">Last name: <span class="form-required" title="This field is required.">*</span></label>
+        <input type="text" maxlength="128" name="transaction[billing][last_name]" id="edit-panes-billing-billing-last-name" size="32" value="" onchange="document.getElementById('edit-panes-billing-customer-last-name').value = this.value;" class="form-text required" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-company-wrapper">
+        <label for="edit-panes-billing-billing-company">Company: </label>
+        <input type="text" maxlength="128" name="transaction[billing][company]" id="edit-panes-billing-billing-company" size="32" value="" class="form-text" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-street1-wrapper">
+        <label for="edit-panes-billing-billing-street1">Street address: </label>
+        <input type="text" maxlength="128" name="transaction[billing][street_address]" id="edit-panes-billing-billing-street1" size="32" value="" class="form-text" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-street2-wrapper">
+        <input type="text" maxlength="128" name="transaction[billing][extended_address]" id="edit-panes-billing-billing-street2" size="32" value="" class="form-text" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-city-wrapper">
+        <label for="edit-panes-billing-billing-city">City: </label>
+        <input type="text" maxlength="128" name="transaction[billing][locality]" id="edit-panes-billing-billing-city" size="32" value="" class="form-text" data-parsley-group="block-1">
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-country-wrapper">
+        <label for="edit-panes-billing-billing-country">Country: </label>
+        <select name="transaction[billing][country_code_numeric]" class="form-select ucCountrySelect-processed" id="edit-panes-billing-billing-country" data-parsley-group="block-1"><option value="4">Afghanistan</option><option value="8">Albania</option><option value="12">Algeria</option><option value="16">American Samoa</option><option value="20">Andorra</option><option value="24">Angola</option><option value="660">Anguilla</option><option value="10">Antarctica</option><option value="28">Antigua and Barbuda</option><option value="32">Argentina</option><option value="51">Armenia</option><option value="533">Aruba</option><option value="36">Australia</option><option value="40">Austria</option><option value="31">Azerbaijan</option><option value="44">Bahamas</option><option value="48">Bahrain</option><option value="50">Bangladesh</option><option value="52">Barbados</option><option value="112">Belarus</option><option value="56">Belgium</option><option value="84">Belize</option><option value="204">Benin</option><option value="60">Bermuda</option><option value="64">Bhutan</option><option value="68">Bolivia, Plurinational State of</option><option value="535">Bonaire, Saint Eustatius and Saba</option><option value="70">Bosnia and Herzegovina</option><option value="72">Botswana</option><option value="74">Bouvet Island</option><option value="76">Brazil</option><option value="86">British Indian Ocean Territory</option><option value="96">Brunei Darussalam</option><option value="100">Bulgaria</option><option value="854">Burkina Faso</option><option value="108">Burundi</option><option value="116">Cambodia</option><option value="120">Cameroon</option><option value="124">Canada</option><option value="132">Cape Verde</option><option value="136">Cayman Islands</option><option value="140">Central African Republic</option><option value="148">Chad</option><option value="152">Chile</option><option value="156">China</option><option value="162">Christmas Island</option><option value="166">Cocos (Keeling) Islands</option><option value="170">Colombia</option><option value="174">Comoros</option><option value="178">Congo</option><option value="180">Congo, the Democratic Republic of the</option><option value="184">Cook Islands</option><option value="188">Costa Rica</option><option value="191">Croatia</option><option value="192">Cuba</option><option value="531">Curaçao</option><option value="196">Cyprus</option><option value="203">Czech Republic</option><option value="384">Côte d'Ivoire</option><option value="208">Denmark</option><option value="262">Djibouti</option><option value="212">Dominica</option><option value="214">Dominican Republic</option><option value="218">Ecuador</option><option value="818">Egypt</option><option value="222">El Salvador</option><option value="226">Equatorial Guinea</option><option value="232">Eritrea</option><option value="233">Estonia</option><option value="231">Ethiopia</option><option value="238">Falkland Islands (Malvinas)</option><option value="234">Faroe Islands</option><option value="242">Fiji</option><option value="246">Finland</option><option value="250">France</option><option value="254">French Guiana</option><option value="258">French Polynesia</option><option value="260">French Southern Territories</option><option value="266">Gabon</option><option value="270">Gambia</option><option value="268">Georgia</option><option value="276">Germany</option><option value="288">Ghana</option><option value="292">Gibraltar</option><option value="304">Greenland</option><option value="308">Grenada</option><option value="312">Guadeloupe</option><option value="316">Guam</option><option value="320">Guatemala</option><option value="831">Guernsey</option><option value="324">Guinea</option><option value="624">Guinea-Bissau</option><option value="328">Guyana</option><option value="332">Haiti</option><option value="334">Heard Island and McDonald Islands</option><option value="336">Holy See (Vatican City State)</option><option value="340">Honduras</option><option value="344">Hong Kong</option><option value="348">Hungary</option><option value="352">Iceland</option><option value="356">India</option><option value="360">Indonesia</option><option value="364">Iran, Islamic Republic of</option><option value="368">Iraq</option><option value="372">Ireland</option><option value="833">Isle of Man</option><option value="376">Israel</option><option value="380">Italy</option><option value="388">Jamaica</option><option value="392">Japan</option><option value="832">Jersey</option><option value="400">Jordan</option><option value="398">Kazakhstan</option><option value="404">Kenya</option><option value="296">Kiribati</option><option value="408">Korea, Democratic People's Republic of</option><option value="410">Korea, Republic of</option><option value="414">Kuwait</option><option value="417">Kyrgyzstan</option><option value="418">Lao People's Democratic Republic</option><option value="428">Latvija</option><option value="422">Lebanon</option><option value="426">Lesotho</option><option value="430">Liberia</option><option value="434">Libya</option><option value="438">Liechtenstein</option><option value="440">Lietuva</option><option value="442">Luxembourg</option><option value="446">Macao</option><option value="807">Macedonia</option><option value="450">Madagascar</option><option value="454">Malawi</option><option value="458">Malaysia</option><option value="462">Maldives</option><option value="466">Mali</option><option value="470">Malta</option><option value="584">Marshall Islands</option><option value="474">Martinique</option><option value="478">Mauritania</option><option value="480">Mauritius</option><option value="175">Mayotte</option><option value="484">Mexico</option><option value="583">Micronesia, Federated States of</option><option value="498">Moldova, Republic of</option><option value="492">Monaco</option><option value="496">Mongolia</option><option value="499">Montenegro</option><option value="500">Montserrat</option><option value="504">Morocco</option><option value="508">Mozambique</option><option value="104">Myanmar</option><option value="516">Namibia</option><option value="520">Nauru</option><option value="524">Nepal</option><option value="528">Netherlands</option><option value="540">New Caledonia</option><option value="554">New Zealand</option><option value="558">Nicaragua</option><option value="566">Nigeria</option><option value="570">Niue</option><option value="574">Norfolk Island</option><option value="580">Northern Mariana Islands</option><option value="578">Norway</option><option value="512">Oman</option><option value="586">Pakistan</option><option value="585">Palau</option><option value="275">Palestinian Territory, Occupied</option><option value="591">Panama</option><option value="600">Paraguay</option><option value="604">Perú</option><option value="608">Philippines</option><option value="612">Pitcairn</option><option value="616">Poland</option><option value="620">Portugal</option><option value="630">Puerto Rico</option><option value="634">Qatar</option><option value="642">Romania</option><option value="643">Russian Federation</option><option value="646">Rwanda</option><option value="638">Réunion</option><option value="652">Saint Barthélemy</option><option value="654">Saint Helena, Ascension and Tristan da Cunha</option><option value="659">Saint Kitts and Nevis</option><option value="662">Saint Lucia</option><option value="663">Saint Martin (French part)</option><option value="666">Saint Pierre and Miquelon</option><option value="670">Saint Vincent and the Grenadines</option><option value="882">Samoa</option><option value="674">San Marino</option><option value="678">Sao Tome and Principe</option><option value="682">Saudi Arabia</option><option value="686">Senegal</option><option value="688">Serbia</option><option value="690">Seychelles</option><option value="694">Sierra Leone</option><option value="702">Singapore</option><option value="534">Sint Maarten</option><option value="703">Slovakia</option><option value="705">Slovenia</option><option value="90">Solomon Islands</option><option value="706">Somalia</option><option value="710">South Africa</option><option value="239">South Georgia and the South Sandwich Islands</option><option value="724">Spain</option><option value="144">Sri Lanka</option><option value="736">Sudan</option><option value="740">Suriname</option><option value="744">Svalbard and Jan Mayen</option><option value="748">Swaziland</option><option value="752">Sweden</option><option value="756">Switzerland</option><option value="760">Syrian Arab Republic</option><option value="158">Taiwan, Republic of China</option><option value="762">Tajikistan</option><option value="834">Tanzania, United Republic of</option><option value="764">Thailand</option><option value="626">Timor-Leste</option><option value="768">Togo</option><option value="772">Tokelau</option><option value="776">Tonga</option><option value="780">Trinidad and Tobago</option><option value="788">Tunisia</option><option value="795">Turkmenistan</option><option value="796">Turks and Caicos Islands</option><option value="798">Tuvalu</option><option value="792">Türkiye</option><option value="800">Uganda</option><option value="784">United Arab Emirates</option><option value="826">United Kingdom</option><option value="840" selected="selected">United States</option><option value="581">United States Minor Outlying Islands</option><option value="858">Uruguay</option><option value="860">Uzbekistan</option><option value="548">Vanuatu</option><option value="862">Venezuela, Bolivarian Republic of</option><option value="704">Viet Nam</option><option value="92">Virgin Islands British</option><option value="850">Virgin Islands US</option><option value="876">Wallis and Futuna</option><option value="732">Western Sahara</option><option value="887">Yemen</option><option value="894">Zambia</option><option value="716">Zimbabwe</option><option value="248">Åland Islands</option><option value="300">Ελλάδα</option><option value="804">Україна</option></select>
+      </div>
+      <div class="form-item" id="edit-panes-billing-billing-zone-wrapper">
+        <label for="edit-panes-billing-billing-zone">State/Province:</label>
+        <select name="transaction[billing][region]" class="form-select" id="edit-panes-billing-billing-zone" data-parsley-group="block-1"><option value="" selected="selected">Please select</option><option value="1">Alabama</option><option value="2">Alaska</option><option value="3">American Samoa</option><option value="4">Arizona</option><option value="5">Arkansas</option><option value="6">Armed Forces Africa</option><option value="7">Armed Forces Americas</option><option value="8">Armed Forces Canada</option><option value="9">Armed Forces Europe</option><option value="10">Armed Forces Middle East</option><option value="11">Armed Forces Pacific</option><option value="12">California</option><option value="13">Colorado</option><option value="14">Connecticut</option><option value="15">Delaware</option><option value="16">District of Columbia</option><option value="17">Federated States Of Micronesia</option><option value="18">Florida</option><option value="19">Georgia</option><option value="20">Guam</option><option value="21">Hawaii</option><option value="22">Idaho</option><option value="23">Illinois</option><option value="24">Indiana</option><option value="25">Iowa</option><option value="26">Kansas</option><option value="27">Kentucky</option><option value="28">Louisiana</option><option value="29">Maine</option><option value="30">Marshall Islands</option><option value="31">Maryland</option><option value="32">Massachusetts</option><option value="33">Michigan</option><option value="34">Minnesota</option><option value="35">Mississippi</option><option value="36">Missouri</option><option value="37">Montana</option><option value="38">Nebraska</option><option value="39">Nevada</option><option value="40">New Hampshire</option><option value="41">New Jersey</option><option value="42">New Mexico</option><option value="43">New York</option><option value="44">North Carolina</option><option value="45">North Dakota</option><option value="46">Northern Mariana Islands</option><option value="47">Ohio</option><option value="48">Oklahoma</option><option value="49">Oregon</option><option value="50">Palau</option><option value="51">Pennsylvania</option><option value="52">Puerto Rico</option><option value="53">Rhode Island</option><option value="54">South Carolina</option><option value="55">South Dakota</option><option value="56">Tennessee</option><option value="57">Texas</option><option value="58">Utah</option><option value="59">Vermont</option><option value="60">Virgin Islands</option><option value="61">Virginia</option><option value="62">Washington</option><option value="63">West Virginia</option><option value="64">Wisconsin</option><option value="65">Wyoming</option></select>
+      </div>
+      <span class="zone-throbber"></span>
+      <div class="form-item" id="edit-panes-billing-billing-postal-code-wrapper">
+        <label for="edit-panes-billing-billing-postal-code">Postal code: <span class="form-required" title="This field is required.">*
+        <input type="number" maxlength="128" name="transaction[billing][postal_code]" id="edit-panes-billing-billing-postal-code" size="20" value="" onblur="javascript:validatePostalCode();" class="form-text required" data-parsley-group="block-1">
+      </span></label></div>
+      <span id="billing-postal-code-error" style="visibility: hidden"><b> Enter 5 to 9 numbers for your Postal Code. </b><input type="button" id="billing-postal-code-error" value="Close" onclick="hideSpan(this.id)" data-parsley-group="block-1"></span>
+      <div class="form-item" id="edit-panes-billing-billing-phone-wrapper">
+        <label for="edit-panes-billing-billing-phone">Phone number: </label>
+        <input type="text" maxlength="128" name="transaction[custom_fields][billing_phone]" id="edit-panes-billing-billing-phone" size="20" value="" onblur="javascript:validatePhoneNumber();" class="form-text" data-parsley-group="block-1">
+      </div>
+      <span id="billing-phone-number-error" style="visibility: hidden"> <b> Enter 5 to 20 numbers for your Phone Number. </b><input type="button" id="billing-phone-number-error" value="Close" onclick="hideSpan(this.id)" data-parsley-group="block-1"></span>
+
+    </div>
+  </div>
+  <div class="form-section">
+    <img src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/modules/uc_braintree_tr_payment/images/visa.gif"><img src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/modules/uc_braintree_tr_payment/images/mastercard.gif">
+    <img src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/modules/uc_braintree_tr_payment/images/discover.gif"><img src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/modules/uc_braintree_tr_payment/images/amex.gif">
+      <input type="hidden" name="tr_data" id="edit-tr-data" value="5c90f5029e928b59cb67162d06254be71ad4776e|api_version=4&amp;kind=create_transaction&amp;public_key=82xmx5cwyxvnvfmj&amp;redirect_url=https%3A%2F%2Fsngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io%2F%3Fq%3Dexpress%2Fcredit%2Fcomplete%26paymentAction%3DtransparentRedirect&amp;time=20160414150217&amp;transaction%5Bcustomer_id%5D=&amp;transaction%5Btype%5D=sale&amp;transaction%5Bcustomer%5D%5Bwebsite%5D=morningstarministries.org&amp;transaction%5Boptions%5D%5Bstore_in_vault%5D=0&amp;transaction%5Boptions%5D%5Bsubmit_for_settlement%5D=TRUE&amp;transaction%5Bchannel%5D=PioneeringSoftware_SP_Braintree" data-parsley-group="block-2">
+      <input type="hidden" name="form_build_id" id="form-77b75b9f4fd4e144deb4ab4cc6f027bf" value="form-77b75b9f4fd4e144deb4ab4cc6f027bf" data-parsley-group="block-2">
+      <input type="hidden" name="form_id" id="edit-uc-braintree-tr-payment-express-donate-form" value="uc_braintree_tr_payment_express_donate_form" data-parsley-group="block-2">
+      <div id="trDiv" class="hideDivision">
+        <div class="form-item" id="edit-transaction[credit-card-number]-wrapper">
+          <label for="edit-transaction[credit-card-number]">Card Number: </label>
+          <input type="text" maxlength="19" name="transaction[credit_card][number]" id="edit-transaction[credit-card-number]" size="20" value="" autocomplete="off" class="form-text" data-parsley-group="block-2">
+        </div>
+        <div class="form-item" id="edit-transaction[credit-card-expiration-month]-wrapper">
+          <label for="edit-transaction[credit-card-expiration-month]">Expiration Month: </label>
+          <select name="transaction[credit_card][expiration_month]" class="form-select" id="edit-transaction[credit-card-expiration-month]" data-parsley-group="block-2"><option value="1">01 - January</option><option value="2">02 - February</option><option value="3">03 - March</option><option value="4">04 - April</option><option value="5">05 - May</option><option value="6">06 - June</option><option value="7">07 - July</option><option value="8">08 - August</option><option value="9">09 - September</option><option value="10">10 - October</option><option value="11">11 - November</option><option value="12">12 - December</option></select>
+        </div>
+        <div class="form-item" id="edit-transaction[credit-card-expiration-year]-wrapper">
+          <label for="edit-transaction[credit-card-expiration-year]">Expiration Year: </label>
+          <select name="transaction[credit_card][expiration_year]" class="form-select" id="edit-transaction[credit-card-expiration-year]" data-parsley-group="block-2"><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option></select>
+        </div>
+        <div class="form-item" id="edit-transaction[credit-card-cvv]-wrapper">
+          <label for="edit-transaction[credit-card-cvv]">CVV: </label>
+          <input type="text" maxlength="4" name="transaction[credit_card][cvv]" id="edit-transaction[credit-card-cvv]" size="3" value="" autocomplete="off" class="form-text" data-parsley-group="block-2">
+        </div>
+      </div>
+  </div>
+  <div class="form-navigation">
+    <button type="button" class="previous btn btn-info pull-left" style="display: none;">&lt; Previous</button>
+    <button type="button" id="next-button" class="next btn btn-info pull-right">Next &gt;</button>
+    <input type="submit" id="submit-button" value="Donate" class="btn btn-default pull-left" style="display: none;">
+    <span class="clearfix"></span>
+  </div>
+  
+</form>
+<script src="//assets.codepen.io/assets/common/stopExecutionOnTimeout.js?t=1"></script>
+<script src="https://rawgit.com/guillaumepotier/Parsley.js/2.3.9/dist/parsley.js"></script>
+
+<script src="http://sngl.dnat.dev.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/modules/uc_braintree_tr_payment/uc_braintree_tr_payment_express/js/sisyphus.min.js?G"></script>
+<script>jQuery2x(function () {
+    var $sections = $('.form-section');
+    function navigateTo(index) {
+        $sections.removeClass('current').eq(index).addClass('current');
+        $('.form-navigation .previous').toggle(index > 0);
+        var atTheEnd = index >= $sections.length - 1;
+        $('.form-navigation .next').toggle(!atTheEnd);
+        $('.form-navigation [type=submit]').toggle(atTheEnd);
+    }
+    function curIndex() {
+        return $sections.index($sections.filter('.current'));
+    }
+    $('.form-navigation .previous').click(function () {
+        navigateTo(curIndex() - 1);
+    });
+    $('.form-navigation .next').click(function () {
+        if ($('#uc-braintree-tr-payment-express-donate-form').parsley().validate({ group: 'block-' + curIndex() }))
+            navigateTo(curIndex() + 1);
+    });
+    $sections.each(function (index, section) {
+        $(section).find(':input').attr('data-parsley-group', 'block-' + index);
+    });
+    navigateTo(0);
+});
+//# sourceURL=pen.js
+/* Here we will persist the form data into localStorage on every keystroke */
+jQuery2x( function() {
+$("form").sisyphus();
+} );
+</script>
+
+</body></html>

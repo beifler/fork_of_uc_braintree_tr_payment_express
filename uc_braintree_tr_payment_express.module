@@ -73,11 +73,10 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   $form['#attached']['js'] = array(
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v1/braintree-data.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
-	drupal_add_js('//--><!]]></script><script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
 	drupal_add_js(drupal_get_path('module', 'uc_cart') . '/uc_cart.js'),
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/dist/parsley.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/files/parsley-validation.js?230948"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
- 	//drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/sisyphus.min.js'),
+ 	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/sisyphus.min.js'),
  // 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
   );
   $form['#attributes'] = array('name' => 'uc_braintree_tr_payment_express_donate');
@@ -393,6 +392,12 @@ display: none;
   margin-top: 10px;
 }
 </style>
+<script type="text/javascript">
+/* Here we will persist the form data into localStorage on every keystroke */
+jQuery2x( function() {
+$("form").sisyphus();
+});
+</script>
 </div>
   <div class="form-navigation">
     <button type="button" class="previous btn btn-info pull-left">&lt; Previous</button>
