@@ -74,9 +74,9 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v1/braintree-data.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
 	drupal_add_js(drupal_get_path('module', 'uc_cart') . '/uc_cart.js'),
-	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/dist/parsley.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
-	drupal_add_js('//--><!]]></script><script type="text/javascript" src="http://sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/sites/sngl.dnat.tmp.o4895099352.v3.s1.chi.boa.io/files/parsley-validation.js?230948"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
- 	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/sisyphus.min.js'),
+ //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/sisyphus.min.js'),
+ //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/parsley.min.js'),
+ //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/parsley-validation.js?b'),
  // 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
   );
   $form['#attributes'] = array('name' => 'uc_braintree_tr_payment_express_donate');
@@ -86,11 +86,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     $uc_braintree_tr_payment_express_anonymous_uid = variable_get('uc_braintree_tr_payment_express_anonymous_uid', '999999');
     $user->uid = $uc_braintree_tr_payment_express_anonymous_uid;
   }
+/*
   $form['css'] = array(
     '#type' => 'markup',
     '#value' => '<link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/doc/assets/docs.css" rel="stylesheet"> <link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/src/parsley.css" rel="stylesheet">'
   );
-
+*/
   $form['section1'] = array(
     '#type' => 'markup',
     '#value' => '<div class="form-section 1">',
@@ -109,13 +110,14 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     ),
   );
 
+/*
   $form['amount_error'] = array(
     '#value' => "<span id ='amount-error' style = 'visibility: hidden'><b>" .
     "Enter only numbers and a decimal point if needed.</b>" .
     "<input type='button' id='amount-error' value='Close' " .
     "onclick='hideSpan(this.id)' /></span>",
   );
-
+*/
   $form['section1-close'] = array(
     '#type' => 'markup',
     '#value' => '</div><div class="form-section 2">',
@@ -394,8 +396,8 @@ display: none;
 </style>
 <script type="text/javascript">
 /* Here we will persist the form data into localStorage on every keystroke */
-jQuery2x( function() {
-$("form").sisyphus();
+jq_newer( function() {
+jq_newer("form").sisyphus();
 });
 </script>
 </div>
