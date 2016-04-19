@@ -36,3 +36,11 @@ jq_newer(function () {
   });
   navigateTo(0); // Start at the beginning
 });
+/* Here we will persist the form data into localStorage on every keystroke */
+jq_newer( function() { jq_newer( "#uc-braintree-tr-payment-express-donate-form" ).sisyphus( { excludeFields: jq_newer( "#edit-panes-card-number, #edit-panes-cvv" )} ); } );
+//jq_newer( function() {
+//jq_newer("form").sisyphus({
+//excludeFields: [ "#edit-transaction[credit-card-number]" ]
+//excludeFields: jq_newer( "#edit-transaction[credit-card-number],#edit-transaction[credit-card-expiration-month],#edit-transaction[credit-card-expiration-year],#edit-transaction[credit-card-cvv]" )
+//});
+//});

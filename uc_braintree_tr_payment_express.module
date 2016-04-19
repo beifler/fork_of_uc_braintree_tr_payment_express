@@ -69,6 +69,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   global $_uc_braintree_tr_payment_express_connection_exception;
   uc_braintree_tr_payment_configuration_initialization();
 
+  drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/form.css');
   $form = array();
   $form['#attached']['js'] = array(
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
@@ -99,6 +100,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   $form['transaction[amount]'] = array(
     '#type' => 'textfield',
     '#title' => t('Amount'),
+    '#id' => 'edit-panes-amount',
     '#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#size' => 20,
@@ -171,7 +173,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   $form['transaction[billing][last_name]'] = array(
     '#type' => 'textfield',
     '#id' => 'edit-panes-billing-billing-last-name',
-    '#title' => t('Last name'),
+    //'#title' => t('Last name'),
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
     '#size' => 32,
     '#required' => TRUE,
@@ -335,6 +337,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   $form['transaction[credit_card][number]'] = array(
     '#type' => 'textfield',
     '#title' => t('Card Number'),
+    '#id' => 'edit-panes-card-number',
     '#attributes' => array(
       'autocomplete' => 'off',
       //'onchange' => 'javascript:hideSubmit();',
@@ -357,6 +360,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     $form['transaction[credit_card][cvv]'] = array(
       '#type' => 'textfield',
       '#title' => t('CVV'),
+      '#id' => 'edit-panes-cvv',
       '#attributes' => array(
         'autocomplete' => 'off',
         //'onchange' => 'javascript:hideSubmit();',
@@ -381,25 +385,6 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#weight' => 20,
     //'#value' => "<span id ='submit-button' style = 'visibility: hidden'>" .
     '#value' => '
-<style>
-.form-section {
-  padding-left: 15px;
-  border-left: 2px solid #FF851B;
-display: none;
-}
-.form-section.current {
-  display: inherit;
-}
-.btn-info, .btn-default {
-  margin-top: 10px;
-}
-</style>
-<script type="text/javascript">
-/* Here we will persist the form data into localStorage on every keystroke */
-jq_newer( function() {
-jq_newer("form").sisyphus();
-});
-</script>
 </div>
   <div class="form-navigation">
     <button type="button" class="previous btn btn-info pull-left">&lt; Previous</button>
