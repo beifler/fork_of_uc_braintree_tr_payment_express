@@ -2,7 +2,7 @@
 /**
  * @file
  * Used to allow a one screen donation form using the Braintree transparent
- * redirect and server-to-server token processing. 
+ * redirect and server-to-server token processing.
  */
 
 /**
