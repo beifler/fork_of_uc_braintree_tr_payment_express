@@ -105,6 +105,11 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<div class="invalid-form-error-message hidden"><h4>Please check your entry below</h4></div>',
   );
 
+  $form['gift-value'] = array(
+    '#type' => 'markup',
+    '#value' => '<div id="gift-value"></div>',
+  );
+
   $form['section1'] = array(
     '#type' => 'markup',
     '#value' => '<div class="form-section 1">',
