@@ -122,7 +122,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['section1'] = array(
     '#type' => 'markup',
-    '#value' => '<div class="form-section 1">',
+    '#value' => '<div class="form-section one">',
   );
 
   $form['transaction[amount]'] = array(
@@ -166,9 +166,9 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     "onclick='hideSpan(this.id)' /></span>",
   );
 */
-  $form['section1-close'] = array(
+  $form['section1-close-open-section2'] = array(
     '#type' => 'markup',
-    '#value' => '</div><div class="form-section 2">',
+    '#value' => '</div><div class="form-section two">',
   );
 
   $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
@@ -367,9 +367,9 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     ),
   );
 */
-  $form['section2'] = array(
+  $form['section2-close-section3-open'] = array(
     '#type' => 'markup',
-    '#value' => '</div><div class="form-section 3">',
+    '#value' => '</div><div class="form-section three">',
   );
 
   $image_path = base_path() . drupal_get_path('module', 'uc_braintree_tr_payment') . "/images";
@@ -431,6 +431,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#weight' => 20,
     //'#value' => "<span id ='submit-button' style = 'visibility: hidden'>" .
     '#value' => '
+    <!-- Section 3 close -->
 </div>
   <div class="form-navigation">
     <button type="button" class="previous btn btn-info pull-left">&lt; Previous</button>
