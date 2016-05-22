@@ -110,6 +110,16 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<div id="gift-value"></div>',
   );
 
+  $form['progress'] = array(
+    '#type' => 'markup',
+    '#value' => '
+    <ul id="progress">
+      <li><span>1</span>Amount</li>
+      <li><span>2</span>Name</li>
+      <li><span>3</span>Finish</li>
+    </ul>',
+  );
+
   $form['section1'] = array(
     '#type' => 'markup',
     '#value' => '<div class="form-section 1">',
