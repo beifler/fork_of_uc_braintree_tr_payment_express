@@ -12,7 +12,7 @@ function uc_braintree_tr_payment_express_perm() {
   return array('access donate form');
 }
 
-/**
+/***
  * Implements hook_menu().
  */
 function uc_braintree_tr_payment_express_menu() {
@@ -70,6 +70,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   uc_braintree_tr_payment_configuration_initialization();
 
   drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/form.css');
+  //drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/additional_form_styles.css');
   $form = array();
   $form['#attached']['js'] = array(
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
@@ -93,20 +94,45 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/doc/assets/docs.css" rel="stylesheet"> <link href="https://rawgit.com/guillaumepotier/Parsley.js/2.3.7/src/parsley.css" rel="stylesheet">'
   );
 */
+
+  $form['form-wrapper'] = array(
+    '#type' => 'markup',
+    '#value' => '<div id="form-wrapper">',
+  );
+
   $form['section1'] = array(
     '#type' => 'markup',
     '#value' => '<div class="form-section 1">',
   );
+
   $form['transaction[amount]'] = array(
+    '#type' => 'radios',
+    '#title' => t('Amount'),
+    '#id' => 'edit-panes-amount-options',
+    //'#required' => TRUE,
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
+    '#options' => array(('1') => t('1'),('25') => ('25'),('50') => t('50')),
+    //'#size' => 20,
+    '#attributes' => array(
+//'onKeyUp' => 'javascript:hideSubmit();',
+      //'onKeyPress' => 'javascript:validateAmount();',
+//      'step' => '0.01',
+//      'data-parsley-pattern' => '(?:\d*\.)?\d+',
+	'data-parsley-multiple' => 'a-val',
+    ),
+  );
+
+  $form['transaction[amount][other]'] = array(
     '#type' => 'textfield',
     '#title' => t('Amount'),
-    '#id' => 'edit-panes-amount',
-    '#required' => TRUE,
+    '#id' => 'edit-panes-amount-other',
+    //'#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#size' => 20,
     '#attributes' => array(
       //'onKeyUp' => 'javascript:hideSubmit();',
       //'onKeyPress' => 'javascript:validateAmount();',
+      'data-parsley-multiple' => 'a-val',
       'step' => '0.01',
       'data-parsley-pattern' => '(?:\d*\.)?\d+',
     ),
@@ -149,7 +175,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#id' => 'edit-panes-billing-customer-last-name',
     '#title' => t('Customer last name'),
     '#required' => TRUE,
-    '#default_value' => 'test customer last name',
+    '#default_value' => 'unknown last name',
     '#size' => 32,
     //'#attributes' => array(
     //  'onchange' => 'javascript:hideSubmit();',
@@ -391,7 +417,10 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     <button type="button" class="next btn btn-info pull-right">Next &gt;</button>
     <input type="submit" id="submit-button" class="btn btn-default pull-left" value="Donate"/></span>
     <span class="clearfix"></span>
-  </div>',
+  </div>
+  <!--Wrapper Close -->
+</div>
+  ',
   );
 
   uc_braintree_tr_payment_express_unset_sessions();
