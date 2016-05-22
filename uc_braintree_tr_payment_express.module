@@ -125,10 +125,14 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<div class="form-section one">',
   );
 
-  $form['transaction[amount]'] = array(
+  $form['transaction-amount'] = array(
     '#type' => 'radios',
+    '#parents' => array('transaction'),
+    // '#prefix' => '<div class="poll-form">',
+    // '#suffix' => '</div>',
     '#title' => t('Amount'),
     '#id' => 'edit-panes-amount-options',
+//    '#theme' => 'my_radios',
     //'#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#options' => array(('1') => t('1'),('25') => ('25'),('50') => t('50')),
@@ -138,7 +142,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
       //'onKeyPress' => 'javascript:validateAmount();',
 //      'step' => '0.01',
 //      'data-parsley-pattern' => '(?:\d*\.)?\d+',
-	'data-parsley-multiple' => 'a-val',
+//	'data-parsley-multiple' => 'a-val',
     ),
   );
 
@@ -577,6 +581,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 /**
  * Page callback for transaction completion.
  */
+ /*
 function uc_braintree_tr_payment_express_donate_form_complete() {
   uc_braintree_tr_payment_configuration_initialization();
   uc_braintree_tr_payment_express_unset_sessions();
