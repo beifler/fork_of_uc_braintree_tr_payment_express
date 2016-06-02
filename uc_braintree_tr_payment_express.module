@@ -437,13 +437,15 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '
     <!-- Section 3 close -->
 </div>
-  <div class="form-navigation">
-    <button type="button" class="previous btn btn-info pull-left">&lt; Previous</button>
-    <button type="button" class="next btn btn-info pull-right">Next &gt;</button>
-    <input type="submit" id="submit-button" class="btn btn-default pull-left" value="Donate"/></span>
+  <div class="form-navigation clear">
+    <div id="continue-wrapper"> <button type="button" class="next btn btn-info pull-right">Continue &gt;</button> </div>
+      <div id="submit-wrapper">
+        <input type="submit" id="submit-button" class="btn btn-default pull-left" value="Give" style="display: none;">
+      </div>
+      <a href="#" type="button" class="previous btn btn-info pull-left">&lt;&lt; back</button>
     <span class="clearfix"></span>
   </div>
-  <!--Wrapper Close -->
+<!--Form Wrapper Close -->
 </div>
   ',
   );
