@@ -125,6 +125,11 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<div class="form-section one">',
   );
 
+  $form['form-label'] = array(
+    '#type' => 'markup',
+    '#value' => '<label class="description">Your Contribution:</label>',
+  );
+
   $form['transaction-amount'] = array(
     '#type' => 'radios',
     '#parents' => array('transaction'),
