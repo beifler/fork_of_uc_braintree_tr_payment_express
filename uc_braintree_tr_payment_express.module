@@ -135,7 +135,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 //    '#theme' => 'my_radios',
     //'#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
-    '#options' => array(('1') => t('1'),('25') => ('25'),('50') => t('50')),
+    '#options' => array(('25') => t('25'),('50') => ('50'),('100') => t('100'),('250') => t('250'),('500') => t('500'),('1000') => t('1000')),
     //'#size' => 20,
     '#attributes' => array(
 //'onKeyUp' => 'javascript:hideSubmit();',
