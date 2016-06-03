@@ -1,44 +1,312 @@
-.form-section {
-  padding-left: 15px;
-  border-left: 2px solid #FF851B;
-display: none;
+/****************
+  Initial Setup
+*****************/
+
+#gift-value {
+  display: none;
 }
+
+body {
+  min-width: 320px !important;
+  color: #2a415e;
+}
+
+.hidden {
+  display:none;
+}
+
+.visible {
+  display:block;
+}
+
+/************************
+  General Form Elements
+*************************/
+
+.invalid-form-error-message {
+    background-color: #F2E4D1;
+    margin: 0;
+    padding: 3px;
+    border-left: 3px solid #f0ad4e;
+    text-align: center;
+    border-right: 3px solid #f0ad4e;
+    color: #333;
+}
+
+#form-wrapper {
+  width: 95%;
+  max-width: 500px;
+  margin: auto;
+  font-family: "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  background-color: rgba(200, 200, 200, 0.0980392);
+  box-shadow: inset 0px 0px 10px -5px #ccc;
+  padding: 0 1em 2em;
+  box-sizing: border-box;
+}
+
+label.description {
+  margin-left: 1.1%;
+}
+
+.form-section {
+  display: none;
+}
+
 .form-section.current {
   display: inherit;
 }
-.btn-info, .btn-default {
+
+.clear {
+  clear: both;
+}
+
+
+/*************
+  Gift Value
+**************/
+
+#gift-value {
+  padding-top: 0.6em;
+  font-size: 2.5em;
+  text-align: center;
+}
+
+
+/**************
+  Input Boxes
+***************/
+
+.form-item input,
+select {
+  background-color: #fff !important;
+  height: 3em;
+  box-sizing: border-box;
+  margin: 4px;
+  font-size: 16px;
+  padding: 3px 0 0 5px;
+  width: 100%;
+}
+
+.form-item.three-quarters {
+  width: 75%;
+  float: left;
+}
+
+.form-item.half {
+  width: 48%;
+  float: left;
+}
+
+.form-item.quarter {
+  width: 21%;
+  padding: 0 0 0 10px;
+  float: left;
+}
+
+.form-item.half.right {
+  padding: 0 0 0 10px;
+}
+
+
+/*********************
+  Progress Indicator
+**********************/
+
+#progress {
+  width: 303px;
+  padding: 0;
+  margin: auto;
+}
+
+#progress li {
+  display: block;
+  float: left;
+  margin-bottom: 1em;
+  line-height: 1.5em;
+  width: 100px;
+  margin-right: 2.66%;
+  text-align: center;
+  padding: 1.5em 0 1em;
+  box-sizing: border-box;
+  color: #ACAEB0;
+  list-style: none;
+  margin: 0;
+}
+
+#progress li span {
+  background: #ECEDF0;
+  color: #ACAEB0;
+  border-radius: 1em;
+  display: block;
+  width: 1.6em;
+  height: 1.6em;
+  line-height: 1.6em;
+  text-align: center;
+  margin: 0 auto;
+}
+
+#progress li.current {
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.8);
+  color: #666666;
+}
+
+#progress li.current span {
+  background: #666666;
+  color: #fff;
+  font-weight: bold;
+}
+
+
+/**********************
+  1: Amount Selection
+***********************/
+
+.form-section.one {
+  margin-left: 12px;
+}
+
+input[type="radio" i] {
+  display: none;
+  width: auto;
+}
+
+#radios {
+  padding: 0;
+  margin: auto;
+}
+
+.form-item label.option {
+  display: inline-block;
+  font-size: 1.5em;
+  box-sizing: border-box;
+  line-height: 2.4em;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #d0d2da;
+  color: #666666;
+  cursor: pointer;
+  background-color: rgb(226, 227, 232);
+}
+
+#radios li {
+  list-style: none;
+  float: left;
+  border-radius: 3px;
+  border: 1px solid #C9CDD4;
+  background-color: rgb(226, 227, 232);
+  width: 29%;
+  margin: 1.5%;
+}
+
+#radios li .parsley-pattern, .parsley-errors-list {
+    width: 95%;
+    border: none;
+    color:red;
+}
+
+.form-item label.option:hover,
+.option:focus,
+.option:active,
+.option.active,
+.option.disabled,
+.option[disabled] {
+  color: #333;
+  background-color: #d0d2da;
+}
+
+ul.radios label.btn.selected,
+ul.radios label.btn.selected:hover {
+  background-color: #009CDE;
+  border-color: #BFE6FB;
+  color: #FFF;
+}
+
+#radios li.other label {
+  line-height: 1.7em;
+  width: 100%;
+}
+
+#radios li.other {
+  width: 29%;
+  min-width: 95px;
+}
+
+#radios .other input {
+  width: 89%;
+  min-width: 80px;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  padding: 4px;
+  height: 1.5em;
+  box-sizing: border-box;
+}
+
+
+/*******************
+  Credit Card Form
+********************/
+
+select {
+  height: 3em;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  width: 220px;
+}
+
+
+/*********************
+  Navigation Buttons
+**********************/
+
+#continue-wrapper {
+  margin: auto;
+  width: 158px;
+}
+
+#submit-wrapper {
+  margin: 20px auto 0;
+  width: 113px;
+}
+
+.next,
+#submit-button {
+  font-size: 16px;
+  font-family: "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  color: #fff;
+  padding: 0.85em 2.5em;
+  cursor: pointer;
+  line-height: 21px;
+  text-align: center;
+  background-color: #5cb85c;
+  border-radius: 20pt;
+  border: 0px transparent;
+  transition: color .2s, background-color .2s;
+  margin: auto;
+}
+
+.previous {
+  margin-left: 0%;
+  color: #009CDE;
+  text-decoration: none;
+}
+
+.btn-info,
+.btn-default {
   margin-top: 10px;
 }
-input.parsley-success,
-select.parsley-success,
-textarea.parsley-success {
-  color: #468847!important;
-  background-color: #DFF0D8!important;
-  border: 1px solid #D6E9C6!important;
-}
 
-input.parsley-error,
-select.parsley-error,
-textarea.parsley-error {
-  color: #B94A48!important;
-  background-color: #F2DEDE!important;
-  border: 1px solid #EED3D7!important;
-}
 
-.parsley-errors-list {
-  margin: 2px 0 3px;
-  padding: 0;
-  list-style-type: none;
-  font-size: 0.9em;
-  line-height: 0.9em;
-  opacity: 0;
+/***************************
+  Responsive Media Queries
+****************************/
 
-  transition: all .3s ease-in;
-  -o-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
-  -webkit-transition: all .3s ease-in;
-}
-
-.parsley-errors-list.filled {
-  opacity: 1!important;
+@media (max-width: 525px) {
+  .form-item label.option {
+    font-size: 1em !important;
+  }
+  #radios .other input {
+    font-size: 1em !important;
+  }
 }
