@@ -71,7 +71,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   uc_braintree_tr_payment_configuration_initialization();
 
   drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/form.css');
-  //drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/additional_form_styles.css');
+  // drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/additional_form_styles.css');
   $form = array();
   $form['#attached']['js'] = array(
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
