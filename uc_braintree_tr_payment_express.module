@@ -71,7 +71,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   uc_braintree_tr_payment_configuration_initialization();
 
   drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/form.css');
-  // drupal_add_css(drupal_get_path('module', 'uc_braintree_tr_payment_express') . '/css/additional_form_styles.css');
+
   $form = array();
   $form['#attached']['js'] = array(
 	drupal_add_js('//--><!]]></script><script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script><script type="text/javascript"><!--//--><![CDATA[//><!--',  'inline'),
@@ -123,7 +123,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['section1'] = array(
     '#type' => 'markup',
-    '#value' => '<div class="form-section one">',
+    '#value' => '<div class="form-section one clear">',
   );
 
   $form['form-label'] = array(
@@ -136,7 +136,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     //'#parents' => array('transaction'),
     // '#prefix' => '<div class="poll-form">',
     // '#suffix' => '</div>',
-    '#title' => t('Amount'),
+    // '#title' => t('Amount'),
     '#id' => 'edit-panes-amount-options',
 //    '#theme' => 'my_radios',
     //'#required' => TRUE,
