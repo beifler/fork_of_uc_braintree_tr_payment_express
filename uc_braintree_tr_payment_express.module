@@ -200,12 +200,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   }
 
     //'#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
-  $form['transaction-customer-last_name-hidden'] = array(
+  $form['transaction[customer][last_name]'] = array(
     '#type' => 'hidden',
     '#id' => 'edit-panes-billing-customer-last-name-hidden',
     //'#title' => t('Customer last name'),
     '#required' => TRUE,
-    '#default_value' => 'unknown last name',
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
     '#size' => 32,
     //'#attributes' => array(
     //  'onchange' => 'javascript:hideSubmit();',
@@ -237,13 +237,14 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#attributes' => array(
       //'onchange' => 'javascript:hideSubmit();document.getElementById(\'edit-panes-billing-customer-last-name\').value = this.value;',
       'placeholder' => 'Last Name',
-      'onchange' => 'document.getElementById(\'edit-panes-billing-customer-last-name\').value = this.value;',
+      'onchange' => 'document.getElementById(\'edit-panes-billing-customer-last-name-hidden\').value = this.value;',
     ),
   );
 
   if ($customer_id) {
     $form['transaction[customer][email]'] = array(
       '#type' => 'hidden',
+      '#id' => 'edit-panes-billing-email',
       // '#title' => t('E-mail address'),
       '#required' => TRUE,
       '#value' => $user->mail,
@@ -258,6 +259,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   else {
     $form['transaction[customer][email]'] = array(
       '#type' => 'textfield',
+      '#id' => 'edit-panes-billing-email',
       // '#title' => t('E-mail address'),
       '#required' => TRUE,
       '#value' => $_SESSION['uc_braintree_tr_payment_express_email'],
