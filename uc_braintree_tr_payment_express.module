@@ -1,3 +1,4 @@
+
 <?php
 /**
  * @file
@@ -130,9 +131,9 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<label class="description">Your Contribution:</label>',
   );
 
-  $form['transaction-amount'] = array(
+  $form['transaction[amount]'] = array(
     '#type' => 'radios',
-    '#parents' => array('transaction'),
+    //'#parents' => array('transaction'),
     // '#prefix' => '<div class="poll-form">',
     // '#suffix' => '</div>',
     '#title' => t('Amount'),
@@ -140,7 +141,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 //    '#theme' => 'my_radios',
     //'#required' => TRUE,
     '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
-    '#options' => array(('25') => t('25'),('50') => ('50'),('100') => t('100'),('250') => t('250'),('500') => t('500'),('1000') => t('1000')),
+    '#options' => array(('1') => t('1'),('50') => ('50'),('100') => t('100'),('250') => t('250'),('500') => t('500'),('1000') => t('1000')),
     //'#size' => 20,
     '#attributes' => array(
 //'onKeyUp' => 'javascript:hideSubmit();',
@@ -211,7 +212,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     //),
   );
 
-  $form['transaction-billing-first_name'] = array(
+  $form['transaction[billing][first_name]'] = array(
     '#type' => 'textfield',
     '#id' => 'edit-panes-billing-billing-first-name',
     // '#title' => t('First name'),
@@ -226,7 +227,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   );
 
-  $form['transaction-billing-last_name'] = array(
+  $form['transaction[billing][last_name]'] = array(
     '#type' => 'textfield',
     '#id' => 'edit-panes-billing-billing-last-name',
     //'#title' => t('Last name'),
@@ -241,7 +242,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   );
 
   if ($customer_id) {
-    $form['transaction-customer-email'] = array(
+    $form['transaction[customer][email]'] = array(
       '#type' => 'hidden',
       // '#title' => t('E-mail address'),
       '#required' => TRUE,
@@ -255,7 +256,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     );
   }
   else {
-    $form['transaction-customer-email'] = array(
+    $form['transaction[customer][email]'] = array(
       '#type' => 'textfield',
       // '#title' => t('E-mail address'),
       '#required' => TRUE,
@@ -279,31 +280,8 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     ),
   );
 */
-  $form['transaction-billing-postal_code'] = array(
-    '#type' => 'textfield',
-    '#id' => 'edit-panes-billing-billing-postal-code',
-    // '#title' => t('Postal code'),
-    '#required' => TRUE,
-    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_postal_code'],
-    '#size' => 20,
-    '#attributes' => array(
-      'data-parsley-pattern' => '[0-9]{5}(-[0-9]{4})?',
-      'placeholder' => 'Zip',
-      'data-parsley-pattern-message' => 'Please enter a valid zipcode.'
-      //'onBlur' => 'javascript:validatePostalCode();',
-      //'onChange' => 'javascript:hideSubmit();',
-    ),
-  );
-/*
-  $form['postal_code_error'] = array(
-    '#value' => "<span id ='billing-postal-code-error' style = 'visibility: hidden'>" .
-    "<b> Enter 5 to 9 numbers for your Postal Code. </b>" .
-    "<input type='button' id='billing-postal-code-error' value='Close' " .
-    "onclick='hideSpan(this.id)' /></span>",
-  );
-*/
 
-  $form['transaction-billing-street_address'] = array(
+  $form['transaction[billing][street_address]'] = array(
     '#type' => 'textfield',
     '#id' => 'edit-panes-billing-billing-street1',
     // '#title' => t('Address <span class="optional-text">(optional)</span>'),
@@ -349,8 +327,29 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   //$form['transaction[billing][region]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
   $form['transaction[billing][region]']['#id'] = "edit-panes-billing-billing-zone";
 */
+  $form['transaction[billing][postal_code]'] = array(
+    '#type' => 'textfield',
+    '#id' => 'edit-panes-billing-billing-postal-code',
+    '#title' => t('Postal code'),
+    '#required' => TRUE,
+    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_postal_code'],
+    '#size' => 20,
+    '#attributes' => array(
+      'data-parsley-pattern' => '[0-9]{5}(-[0-9]{4})?',
+      //'onBlur' => 'javascript:validatePostalCode();',
+      //'onChange' => 'javascript:hideSubmit();',
+    ),
+  );
+/*
+  $form['postal_code_error'] = array(
+    '#value' => "<span id ='billing-postal-code-error' style = 'visibility: hidden'>" .
+    "<b> Enter 5 to 9 numbers for your Postal Code. </b>" .
+    "<input type='button' id='billing-postal-code-error' value='Close' " .
+    "onclick='hideSpan(this.id)' /></span>",
+  );
+*/
 
-  $form['transaction-custom_fields-billing_phone'] = array(
+  $form['transaction[custom_fields][billing_phone]'] = array(
     '#type' => 'textfield',
     '#id' => 'edit-panes-billing-billing-phone',
     // '#title' => t('Phone number <span class="optional-text">(optional)</span>'),
@@ -400,10 +399,11 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['transaction[credit_card][number]'] = array(
     '#type' => 'textfield',
-    '#title' => t('Card Number'),
+    // '#title' => t('Card Number'),
     '#id' => 'edit-panes-card-number',
     '#attributes' => array(
       'autocomplete' => 'off',
+      'placeholder' => 'Credit Card Number',
       //'onchange' => 'javascript:hideSubmit();',
     ),
     '#size' => 20,
@@ -423,9 +423,10 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
   if (variable_get('uc_braintree_tr_payment_cvv_rules_match', NULL)) {
     $form['transaction[credit_card][cvv]'] = array(
       '#type' => 'textfield',
-      '#title' => t('CVV'),
+      // '#title' => t('CVV'),
       '#id' => 'edit-panes-cvv',
       '#attributes' => array(
+        'placeholder' => 'CVV Number',
         'autocomplete' => 'off',
         //'onchange' => 'javascript:hideSubmit();',
       ),
@@ -597,7 +598,6 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 /**
  * Page callback for transaction completion.
  */
- /*
 function uc_braintree_tr_payment_express_donate_form_complete() {
   uc_braintree_tr_payment_configuration_initialization();
   uc_braintree_tr_payment_express_unset_sessions();
