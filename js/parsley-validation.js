@@ -128,4 +128,8 @@ $sections.each(function(index, section) {
 navigateTo(0); // Start at the beginning
 });
 /* Here we will persist the form data into localStorage on every keystroke */
-jq_newer( function() { jq_newer( "#uc-braintree-tr-payment-express-donate-form" ).sisyphus( { excludeFields: jq_newer( "#edit-panes-card-number, #edit-panes-cvv" )} ); } );
+jq_newer( function() { jq_newer( "#uc-braintree-tr-payment-express-donate-form" ).sisyphus(
+  {
+  excludeFields: jq_newer( "#edit-panes-card-number, #edit-panes-cvv" ),
+  autoRelease: false
+} ); } );

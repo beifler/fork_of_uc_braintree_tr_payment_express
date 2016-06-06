@@ -178,7 +178,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 */
   $form['section1-close-open-section2'] = array(
     '#type' => 'markup',
-    '#value' => '</div><div class="form-section two">',
+    '#value' => '</div><div class="form-section two clear">',
   );
 
   $customer_id = uc_braintree_tr_payment_get_customer_id($user->uid);
@@ -389,7 +389,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 */
   $form['section2-close-section3-open'] = array(
     '#type' => 'markup',
-    '#value' => '</div><div class="form-section three">',
+    '#value' => '</div><div class="form-section three clear">',
   );
 
   $image_path = base_path() . drupal_get_path('module', 'uc_braintree_tr_payment') . "/images";
@@ -404,9 +404,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#type' => 'textfield',
     // '#title' => t('Card Number'),
     '#id' => 'edit-panes-card-number',
+    '#required' => TRUE,
     '#attributes' => array(
       'autocomplete' => 'off',
       'placeholder' => 'Credit Card Number',
+      'data-parsley-pattern' => '/^(?:\d[ -]*?){13,16}$/',
+      'data-parsley-pattern-message' => 'Please enter a valid credit card number.'
       //'onchange' => 'javascript:hideSubmit();',
     ),
     '#size' => 20,
@@ -428,9 +431,11 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
       '#type' => 'textfield',
       // '#title' => t('CVV'),
       '#id' => 'edit-panes-cvv',
+      '#required' => TRUE,
       '#attributes' => array(
         'placeholder' => 'CVV Number',
         'autocomplete' => 'off',
+        'data-parsley-type' => 'number',
         //'onchange' => 'javascript:hideSubmit();',
       ),
       '#size' => 3,
@@ -559,7 +564,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
           'onChange' => 'javascript:var selectedValue = this.options[this.selectedIndex].value;' .
           'javascript: if (selectedValue == "Other") { ' .
           'this.form.action = getElementById("tr_url").value; ' .
-          'getElementById("edit-transaction[credit-card-number]").disabled=false;' .
+          'getElementById("edit-panes-card-number").disabled=false;' .
           'getElementById("edit-transaction[credit-card-expiration-month]").disabled=false;' .
           'getElementById("edit-transaction[credit-card-expiration-year]").disabled=false;' .
           'getElementById("edit-transaction[credit-card-cvv]").disabled=false;' .

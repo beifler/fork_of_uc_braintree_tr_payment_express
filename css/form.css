@@ -28,7 +28,7 @@ body {
 .invalid-form-error-message {
     background-color: #F2E4D1;
     margin: 0;
-    padding: 3px;
+    padding: 15px 0px;
     border-left: 3px solid #f0ad4e;
     text-align: center;
     border-right: 3px solid #f0ad4e;
