@@ -80,7 +80,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
  //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/sisyphus.min.js'),
  //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/parsley.min.js'),
  //	drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/js/parsley-validation.js?b'),
- // 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
+ 		drupal_add_js(drupal_get_path('module', 'uc_braintree_tr_payment_express') .  '/uc_braintree_tr_payment_express.js'),
   );
   $form['#attributes'] = array('name' => 'uc_braintree_tr_payment_express_donate');
 
@@ -131,7 +131,8 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<label class="description">Your Contribution:</label>',
   );
 
-  $form['transaction[amount]'] = array(
+// These will update transaction[amount] via JS for simplicity.
+  $form['radio-amount'] = array(
     '#type' => 'radios',
     //'#parents' => array('transaction'),
     // '#prefix' => '<div class="poll-form">',
@@ -140,7 +141,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#id' => 'edit-panes-amount-options',
 //    '#theme' => 'my_radios',
     //'#required' => TRUE,
-    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
+    // '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#options' => array(('1') => t('1'),('50') => ('50'),('100') => t('100'),('250') => t('250'),('500') => t('500'),('1000') => t('1000')),
     //'#size' => 20,
     '#attributes' => array(
@@ -152,12 +153,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     ),
   );
 
-  $form['transaction[amount][other]'] = array(
+  $form['radio-amount-other'] = array(
     '#type' => 'textfield',
     '#title' => t('Amount'),
     '#id' => 'edit-panes-amount-other',
     //'#required' => TRUE,
-    '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
+    // '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#size' => 20,
     '#attributes' => array(
       //'onKeyUp' => 'javascript:hideSubmit();',
@@ -168,6 +169,21 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     ),
   );
 
+  $form['transaction[amount]'] = array(
+    '#type' => 'hidden',
+    // '#title' => t('Amount'),
+    '#id' => 'bt-amount-other',
+    //'#required' => TRUE,
+    // '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
+    '#size' => 20,
+    '#attributes' => array(
+      //'onKeyUp' => 'javascript:hideSubmit();',
+      //'onKeyPress' => 'javascript:validateAmount();',
+      // 'data-parsley-multiple' => 'a-val',
+      // 'step' => '0.01',
+      // 'data-parsley-pattern' => '(?:\d*\.)?\d+',
+    ),
+  );
 /*
   $form['amount_error'] = array(
     '#value' => "<span id ='amount-error' style = 'visibility: hidden'><b>" .
@@ -409,7 +425,8 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
       'autocomplete' => 'off',
       'placeholder' => 'Credit Card Number',
       'data-parsley-pattern' => '/^(?:\d[ -]*?){13,16}$/',
-      'data-parsley-pattern-message' => 'Please enter a valid credit card number.'
+      'data-parsley-pattern-message' => 'Please enter a valid credit card number.',
+      // 'class' => 'disabled',
       //'onchange' => 'javascript:hideSubmit();',
     ),
     '#size' => 20,
@@ -420,22 +437,27 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['transaction[credit_card][expiration_month]'] = uc_select_month(t('Expiration Month'));
   $form['transaction[credit_card][expiration_month]']['#weight'] = 11;
-  //$form['transaction[credit_card][expiration_month]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+  $form['transaction[credit_card][expiration_month]']['#id'] = 'edit-panes-credit-card-expiration-month';
+  // $form['transaction[credit_card][expiration_month]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+  // $form['transaction[credit_card][expiration_month]']['#attributes'] = array('class' => 'disabled');
 
   $form['transaction[credit_card][expiration_year]'] = uc_select_year(t('Expiration Year'));
   $form['transaction[credit_card][expiration_year]']['#weight'] = 12;
+  $form['transaction[credit_card][expiration_year]']['#id'] = 'edit-panes-credit-card-expiration-year';
   //$form['transaction[credit_card][expiration_year]']['#attributes'] = array('onchange' => 'javascript:hideSubmit();');
+  // $form['transaction[credit_card][expiration_year]']['#attributes'] = array('class' => 'disabled');
 
   if (variable_get('uc_braintree_tr_payment_cvv_rules_match', NULL)) {
     $form['transaction[credit_card][cvv]'] = array(
       '#type' => 'textfield',
       // '#title' => t('CVV'),
-      '#id' => 'edit-panes-cvv',
+      '#id' => 'edit-panes-credit-card-cvv',
       '#required' => TRUE,
       '#attributes' => array(
         'placeholder' => 'CVV Number',
         'autocomplete' => 'off',
         'data-parsley-type' => 'number',
+        // 'class' => 'disabled',
         //'onchange' => 'javascript:hideSubmit();',
       ),
       '#size' => 3,
@@ -538,6 +560,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     );
 
     $form['transaction[credit_card][number]']['#disabled'] = TRUE;
+    $form['transaction[credit_card][number]']['#disabled'] = TRUE;
     $form['transaction[credit_card][expiration_month]']['#disabled'] = TRUE;
     $form['transaction[credit_card][expiration_year]']['#disabled'] = TRUE;
     $form['transaction[credit_card][cvv]']['#disabled'] = TRUE;
@@ -561,21 +584,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
         '#weight' => 15,
         '#attributes' => array(
           'token' => 'token',
-          'onChange' => 'javascript:var selectedValue = this.options[this.selectedIndex].value;' .
-          'javascript: if (selectedValue == "Other") { ' .
-          'this.form.action = getElementById("tr_url").value; ' .
-          'getElementById("edit-panes-card-number").disabled=false;' .
-          'getElementById("edit-transaction[credit-card-expiration-month]").disabled=false;' .
-          'getElementById("edit-transaction[credit-card-expiration-year]").disabled=false;' .
-          'getElementById("edit-transaction[credit-card-cvv]").disabled=false;' .
-          'getElementById("trDiv").setAttribute("class","showDivision");' .
-          '} else { this.form.action = getElementById("s2s_url").value;' .
-          'getElementById("edit-transaction[credit-card-number]").disabled=true;' .
-          'getElementById("edit-transaction[credit-card-expiration-month]").disabled=true;' .
-          'getElementById("edit-transaction[credit-card-expiration-year]").disabled=true;' .
-          'getElementById("edit-transaction[credit-card-cvv]").disabled=true;' .
-          'getElementById("trDiv").setAttribute("class","hideDivision");};',
-          //'onBlur' => 'javascript:hideSubmit();',
+          'onchange' => 'toggleCreditCardFields();',
         ),
       );
 

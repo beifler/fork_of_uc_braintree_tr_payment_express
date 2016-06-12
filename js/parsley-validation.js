@@ -57,6 +57,20 @@ function amountValue() {
   }
 }
 
+// get the value of the chosen amount
+function amountValueNoCommas() {
+  if (radioIsChecked()) {
+    // return the value of the radio button
+    var amount = jq_newer('input[type=radio]:checked').val();
+    return amount;
+  } else {
+    // return the value of the other amount
+    var amount = jq_newer('#edit-panes-amount-other').val();
+    return amount;
+  }
+}
+
+
 // deselects the active radio button
 function deselectRadio() {
   jq_newer('input[class=form-radio]').attr('checked', false)
@@ -92,7 +106,7 @@ jq_newer('#edit-panes-amount-other').click(function() {
 
 // Next button goes forward if current block validates
 jq_newer('.form-navigation .next, .form-radio').click(function() {
-  if (jq_newer('#uc-braintree-tr-payment-express-donate-form').parsley().validate({
+  if (jq_newer('#uc-braintree-tr-payment-express-donate-form').parsley({excluded: 'input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden'}).validate({
       group: 'block-' + curIndex()
     })) {
     if (radioIsChecked() === true || otherIsUsed()) {
@@ -110,6 +124,10 @@ jq_newer('.form-navigation .next, .form-radio').click(function() {
   jq_newer('#gift-value')
     .html("$" + amountValue())
     .toggleClass('filled', !ok);
+
+  jq_newer('#bt-amount-other')
+    .val(amountValueNoCommas());
+
     navigateTo(curIndex() + 1);
     jq_newer('#gift-value').slideDown(500);
   } else {
@@ -127,9 +145,9 @@ $sections.each(function(index, section) {
 });
 navigateTo(0); // Start at the beginning
 });
-/* Here we will persist the form data into localStorage on every keystroke */
+/* Here we will persist the form data into localStorage on every keystroke using sisyphus.js ... doing it in this file to save an extra JS file download. */
 jq_newer( function() { jq_newer( "#uc-braintree-tr-payment-express-donate-form" ).sisyphus(
   {
-  excludeFields: jq_newer( "#edit-panes-card-number, #edit-panes-cvv" ),
+  excludeFields: jq_newer( "#edit-panes-card-number, #edit-panes-credit-card-cvv, #edit-token, #edit-panes-amount-other" ),
   autoRelease: false
 } ); } );
