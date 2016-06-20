@@ -1,5 +1,4 @@
 
-
 /****************
   Initial Setup
 *****************/
@@ -78,36 +77,53 @@ label.description {
   Input Boxes
 ***************/
 
-.form-item input,
-select {
+.form-item {
+    margin: 0px 0 0 0 !important;
+}
+
+.form-item input, select {
   background-color: #fff !important;
   height: 3em;
   box-sizing: border-box;
-  margin: 4px;
-  font-size: 16px;
-  padding: 3px 0 0 5px;
+  margin-right: 0 !important;
+  font-size: 16px !important;
+  padding: 3px 0 0 5px !important;
+  border-radius: 0 !important;
   width: 100%;
 }
 
-.form-item.three-quarters {
-  width: 75%;
+.form-item.three-quarters, #edit-panes-billing-billing-street1-wrapper {
+  width: 72%;
   float: left;
 }
 
-.form-item.half {
-  width: 48%;
+.form-item.half,#edit-panes-billing-billing-first-name-wrapper, #edit-panes-billing-billing-last-name-wrapper  {
+  width: 47%;
   float: left;
 }
 
-.form-item.quarter {
-  width: 21%;
-  padding: 0 0 0 10px;
+.form-item.quarter, #edit-panes-billing-billing-postal-code-wrapper {
+  width: 22%;
+  padding: 0 10px 0 0px;
   float: left;
 }
 
-.form-item.half.right {
-  padding: 0 0 0 10px;
+.form-item.half.right, #edit-panes-billing-billing-last-name-wrapper {
+  padding: 0px 0 0 10px;
 }
+
+#edit-panes-billing-billing-phone-wrapper .logged-in {
+  margin-top: 10px !important;
+  width: 96.3% !important;
+  }
+
+#edit-panes-billing-billing-phone-wrapper .logged-out {
+  padding: 0 0 0 0px;
+  margin-top: 10px !important;
+  width:48%;
+  }
+
+
 
 
 /*********************
@@ -339,7 +355,7 @@ select {
 /***************************
   Responsive Media Queries
 ****************************/
-
+ 
 @media (max-width: 525px) {
   .form-item label.option {
     font-size: 1em !important;
