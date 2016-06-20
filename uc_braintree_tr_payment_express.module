@@ -116,8 +116,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '
     <ul id="progress">
       <li><span>1</span>Amount</li>
-      <li><span>2</span>Name</li>
-      <li><span>3</span>Finish</li>
+      <li><span>2</span>Payment</li>
     </ul>',
   );
 
@@ -131,15 +130,15 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#value' => '<label class="description">Your Contribution:</label>',
   );
 
+  $form['form-radios-wrapper'] = array(
+    '#type' => 'markup',
+    '#value' => '<div id="form-radios-wrapper">',
+  );
+
 // These will update transaction[amount] via JS for simplicity.
   $form['radio-amount'] = array(
     '#type' => 'radios',
-    //'#parents' => array('transaction'),
-    // '#prefix' => '<div class="poll-form">',
-    // '#suffix' => '</div>',
-    // '#title' => t('Amount'),
     '#id' => 'edit-panes-amount-options',
-//    '#theme' => 'my_radios',
     //'#required' => TRUE,
     // '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
     '#options' => array(('1') => t('1'),('50') => ('50'),('100') => t('100'),('250') => t('250'),('500') => t('500'),('1000') => t('1000')),
@@ -155,7 +154,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
 
   $form['radio-amount-other'] = array(
     '#type' => 'textfield',
-    '#title' => t('Amount'),
+    '#title' => t('Other'),
     '#id' => 'edit-panes-amount-other',
     //'#required' => TRUE,
     // '#default_value' => $_SESSION['uc_braintree_tr_payment_express_amount'],
@@ -163,6 +162,8 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#attributes' => array(
       //'onKeyUp' => 'javascript:hideSubmit();',
       //'onKeyPress' => 'javascript:validateAmount();',
+      'class' => 'other btn',
+      // 'placeholder' => 'Other Amount',
       'data-parsley-multiple' => 'a-val',
       'step' => '0.01',
       'data-parsley-pattern' => '(?:\d*\.)?\d+',
@@ -192,6 +193,10 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     "onclick='hideSpan(this.id)' /></span>",
   );
 */
+  $form['form-radios-wrapper-close'] = array(
+    '#type' => 'markup',
+    '#value' => '</div>',
+  );
   $form['section1-close-open-section2'] = array(
     '#type' => 'markup',
     '#value' => '</div><div class="form-section two clear">',
@@ -489,9 +494,9 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     <!-- Section 3 close -->
 </div>
   <div class="form-navigation clear">
-    <div id="continue-wrapper"> <button type="button" class="next btn btn-info pull-right">Continue &gt;</button> </div>
+    <div id="continue-wrapper"> <button type="button" class="continue btn btn-success btn-large">Continue</button> </div>
       <div id="submit-wrapper">
-        <input type="submit" id="submit-button" class="btn btn-default pull-left" value="Give" style="display: none;">
+        <input type="submit" id="submit-button" class="continue btn btn-success btn-large" value="Give" style="display: none;">
       </div>
       <a href="#" type="button" class="previous btn btn-info pull-left">&lt;&lt; back</button>
     <span class="clearfix"></span>

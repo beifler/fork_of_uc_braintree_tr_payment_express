@@ -1,4 +1,3 @@
-
 /****************
   Initial Setup
 *****************/
@@ -19,6 +18,78 @@ body {
 .visible {
   display:block;
 }
+
+
+/*************************
+   Button Initialization
+**************************/
+
+.btn:hover,
+.btn:focus {
+  color: #333;
+  text-decoration: none;
+  background-position: 0 -15px;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled],
+#edit-panes-amount-other-wrapper label:hover {
+  color: #333;
+  background-color: #d0d2da;
+}
+
+#form-radios-wrapper label.btn.selected,
+#form-radios-wrapper label.btn.selected:hover {
+  background-color: #009CDE;
+  border-color: #BFE6FB;
+  color: #FFF;
+}
+
+.btn {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #333;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  background-color: #e2e3e8;
+  border-color: #d0d2da #d0d2da #a5aab8;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border: 1px solid #ccc;
+  border-bottom-color: #b3b3b3;
+  border-radius: 0px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn {
+  max-width: 100%;
+}
+
+.btn,
+.btn:link,
+.btn:visited,
+.btn:active {
+  border-radius: 20pt;
+  padding: 0.85em 2.5em;
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  background-image: none;
+  border: 0px transparent;
+  box-shadow: none;
+  font-weight: 500;
+  padding: 0.5em 1.5em;
+  text-shadow: none;
+  transition: color .2s, background-color .2s;
+}
+
 
 /************************
   General Form Elements
@@ -46,7 +117,7 @@ body {
 }
 
 label.description {
-  margin-left: 1.1%;
+  margin-left: 8%;
 }
 
 .form-section {
@@ -76,10 +147,6 @@ label.description {
 /**************
   Input Boxes
 ***************/
-
-.form-item {
-    margin: 0px 0 0 0 !important;
-}
 
 .form-item input, select {
   background-color: #fff !important;
@@ -131,9 +198,9 @@ label.description {
 **********************/
 
 #progress {
-  width: 303px;
-  padding: 0;
-  margin: auto;
+    width: 202px;
+    padding: 0;
+    margin: auto;
 }
 
 #progress li {
@@ -316,22 +383,28 @@ select {
 
 #continue-wrapper {
   margin: auto;
-  width: 158px;
+  width: 145px;
 }
 
 #submit-wrapper {
   margin: 20px auto 0;
   width: 113px;
 }
-
+.btn-success {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #5cb85c;
+    border-color: #51a351 #51a351 #387038;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
 .next,
-#submit-button {
+#submit-button,  {
   font-size: 16px;
   font-family: "Roboto", Helvetica, Arial, Verdana, sans-serif;
   color: #fff;
   padding: 0.85em 2.5em;
   cursor: pointer;
-  line-height: 21px;
+  line-height: 23px;
   text-align: center;
   background-color: #5cb85c;
   border-radius: 20pt;
@@ -339,11 +412,19 @@ select {
   transition: color .2s, background-color .2s;
   margin: auto;
 }
-
+.btn.btn-large {
+    font-size: 15.96px;
+    padding: 0.85em 2.5em;
+}
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
+    color: #fff;
+    background-color: #51a351;
+}
 .previous {
   margin-left: 0%;
   color: #009CDE;
   text-decoration: none;
+
 }
 
 .btn-info,
@@ -355,12 +436,166 @@ select {
 /***************************
   Responsive Media Queries
 ****************************/
- 
+
 @media (max-width: 525px) {
-  .form-item label.option {
-    font-size: 1em !important;
+  .form-item label.option, #edit-panes-amount-other-wrapper label {
+    font-size: 1.25em !important;
   }
   #radios .other input {
-    font-size: 1em !important;
+    font-size: 1.25em !important;
   }
+}
+
+
+/********************
+     Radio Input
+********************/
+
+.clearfix input,
+.clearfix textarea,
+.clearfix select {
+  margin-bottom: 0;
+}
+
+ input[type='radio'],
+ input[type='checkbox'] {
+  width: auto;
+}
+
+ input[type="checkbox"],
+ input[type="radio"],
+ input:focus[type="checkbox"],
+ input:focus[type="radio"] {
+  height: 1em;
+}
+
+ input:not(.no-stretch),
+ input:focus:not(.no-stretch) {
+  box-shadow: none;
+  outline: none;
+  border: 1px solid #ACAEB0;
+  border-radius: 3px;
+  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.8);
+  height: 3em;
+  padding-left: 1rem;
+}
+
+#form-radios-wrapper .form-item input[type='radio'] {
+  display: none;
+}
+
+#form-radios-wrapper input[type='radio'],
+#form-radios-wrapper input[type='checkbox'] {
+  margin: -2px 2px 0 0;
+  font-size: 1.5em;
+}
+
+.form input,
+.form select,
+.form .inline-error {
+  font-size: 16px;
+}
+
+
+/********************
+    Radio Labels
+********************/
+
+#form-radios-wrapper .form-item label.btn {
+  padding-right: 0;
+  padding-left: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 1.5em;
+}
+
+#form-radios-wrapper label.btn {
+  box-sizing: border-box;
+  line-height: 2em;
+  padding: 4px 12px;
+  text-align: left;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid #C9CDD4;
+  color: #666666;
+}
+
+
+/********************
+   Other Amount Text
+*********************/
+
+#edit-panes-amount-other-wrapper {
+  list-style: none;
+  float: left;
+  border-radius: 3px;
+  border: 1px solid #C9CDD4;
+  background-color: rgb(226, 227, 232);
+  min-width: 95px;
+}
+
+#edit-panes-amount-other-wrapper label.btn {
+  border: none;
+  display: inline-block;
+  font-size: 1.5em;
+  box-sizing: border-box;
+  line-height: 1em;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #d0d2da;
+  color: #666666;
+  cursor: pointer;
+  background-color: rgb(226, 227, 232);
+}
+
+#edit-panes-amount-other {
+  font-size: 1em;
+  height: 1.25em;
+  transition: width 0.5s;
+}
+
+input#edit-panes-amount-other {
+  width: 89%;
+  height: 2.2em!important;
+  min-width: 80px;
+  font-size: 1em;
+  margin: 0 0 5px 5%;
+  padding: 4px;
+  height: 1.5em;
+  box-sizing: border-box;
+}
+
+
+/************************************
+    List Items (#form-radios-wrapper & li)
+*************************************/
+
+.form-item {
+  line-height: 21px;
+  list-style-type: none;
+}
+
+#form-radios-wrapper {
+  display: block;
+  list-style-type: none;
+  margin-left: 8%;
+}
+
+.form-item {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+p,
+.form-item {
+  line-height: 1.5em;
+}
+
+#form-radios-wrapper .form-item {
+  margin-bottom: 1em;
+  float: left;
+  width: 27%;
+  margin-right: 3.85%;
 }
