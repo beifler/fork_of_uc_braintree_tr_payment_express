@@ -162,7 +162,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     '#attributes' => array(
       //'onKeyUp' => 'javascript:hideSubmit();',
       //'onKeyPress' => 'javascript:validateAmount();',
-      'class' => 'other btn',
+      // 'class' => 'other btn',
       // 'placeholder' => 'Other Amount',
       'data-parsley-multiple' => 'a-val',
       'step' => '0.01',
@@ -193,10 +193,12 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     "onclick='hideSpan(this.id)' /></span>",
   );
 */
+
   $form['form-radios-wrapper-close'] = array(
     '#type' => 'markup',
     '#value' => '</div>',
   );
+
   $form['section1-close-open-section2'] = array(
     '#type' => 'markup',
     '#value' => '</div><div class="form-section two clear">',
@@ -220,7 +222,7 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     }
   }
 
-    //'#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
+  //'#default_value' => $_SESSION['uc_braintree_tr_payment_express_last_name'],
   $form['transaction[customer][last_name]'] = array(
     '#type' => 'hidden',
     '#id' => 'edit-panes-billing-customer-last-name-hidden',
@@ -494,8 +496,8 @@ function uc_braintree_tr_payment_express_donate_form($form_state) {
     <!-- Section 3 close -->
 </div>
   <div class="form-navigation clear">
-    <div id="continue-wrapper"> <button type="button" class="continue btn btn-success btn-large">Continue</button> </div>
-      <div id="submit-wrapper">
+    <div id="continue-wrapper"> <button type="button" class="next continue btn btn-success btn-large">Continue</button> </div>
+      <div id="submit-wrapper"
         <input type="submit" id="submit-button" class="continue btn btn-success btn-large" value="Give" style="display: none;">
       </div>
       <a href="#" type="button" class="previous btn btn-info pull-left">&lt;&lt; back</button>
